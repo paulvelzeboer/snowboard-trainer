@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Red Ready — Snowboard Trainer</title>
+<style>
+:root{--bg:#e8f1f8;--card:#fff;--ink:#0e2238;--mute:#5a6c80;--line:#d5e2ee;--blue:#0a6fd6;--red:#e2283f;--ok:#12975a;--heel:#f07f09;--soft:#e6f0f9;
+--sky1:#0e4a86;--sky2:#5fb4ea;--sky3:#cfeafb;--m1:#a9c9e4;--m2:#5d8fbd;--m3:#27527f;--cap:#fff;--sun:#ffd76a}
+@media(prefers-color-scheme:dark){:root{--bg:#0a121c;--card:#132030;--ink:#e8f0f8;--mute:#8fa3b8;--line:#22364b;--blue:#56a8ff;--red:#ff5d70;--ok:#3fd08f;--heel:#ffad42;--soft:#1a2c40;
+--sky1:#050a14;--sky2:#0f2440;--sky3:#1d3c5f;--m1:#27405c;--m2:#1a2f47;--m3:#101f31;--cap:#c9d9e8;--sun:#e8eef6}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;position:relative}
+.hero{position:absolute;inset:0 0 auto;height:310px;background:linear-gradient(var(--sky1),var(--sky2) 55%,var(--sky3));overflow:hidden}
+.hero svg{position:absolute;inset:0;width:100%;height:100%;margin:0}
+header,nav,main{position:relative}
+header{padding:22px 16px 0;max-width:860px;margin:auto;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;color:#fff;text-shadow:0 1px 8px rgba(5,20,40,.5)}
+header small{color:#fff;opacity:.92}
+h1{margin:0 0 4px;font-size:24px;font-weight:900;font-style:italic;letter-spacing:-.02em;text-transform:uppercase;line-height:1.25}
+h1 span{display:inline-block;background:var(--red);color:#fff;padding:0 9px;border-radius:6px;transform:skewX(-8deg);text-shadow:none}
+h2{font-size:18px;margin:0 0 8px;font-weight:800;letter-spacing:-.01em}h3{font-size:15px;margin:14px 0 4px}
+p{margin:6px 0}small,.mute{color:var(--mute)}
+nav{display:flex;gap:6px;max-width:860px;margin:14px auto 0;padding:0 16px;overflow-x:auto}
+button{font:inherit;color:inherit;cursor:pointer;border:1px solid var(--line);background:var(--card);border-radius:99px;padding:7px 14px;white-space:nowrap}
+button:hover{border-color:var(--blue)}
+header button,nav button{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.5);color:#fff;font-weight:600;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);text-shadow:none}
+header button:hover,nav button:hover{border-color:#fff;background:rgba(255,255,255,.32)}
+nav button.on{background:#fff;border-color:#fff;color:#0e2238}
+button.pri{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:600}
+main{max-width:860px;margin:auto;padding:18px 16px 60px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 8px 24px rgba(14,34,56,.09)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.stat{background:linear-gradient(140deg,var(--m3),var(--blue));color:#fff;border-radius:12px;padding:10px;text-align:center;font-size:14px}
+.stat b{display:block;font-size:24px;font-weight:900;font-style:italic}
+.coach{border-left:5px solid var(--red)}
+.strip{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.strip button{padding:6px 2px;font-size:12px;line-height:1.3;white-space:normal;border-radius:10px}
+.strip .sel{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue) inset}
+.strip .done{background:var(--ok);border-color:var(--ok);color:#fff}
+.strip .today b{text-decoration:underline}
+.ex{display:flex;gap:10px;padding:10px 0;border-top:1px solid var(--line);cursor:pointer}
+.ex input{width:20px;height:20px;margin-top:3px;flex:none;accent-color:var(--blue)}
+.ex .dose{color:var(--blue);font-weight:700;white-space:nowrap}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.tag{display:inline-block;font-size:12px;font-weight:600;padding:2px 9px;border-radius:99px;background:var(--soft)}
+.p0{color:var(--blue)}.p1{color:var(--heel)}.p2{color:var(--red)}.p3{color:var(--ok)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+td,th{padding:7px 6px;border-top:1px solid var(--line);text-align:left}
+tr.now{background:var(--soft)}tr[data-open]{cursor:pointer}
+ul{margin:6px 0;padding-left:20px}li{margin:3px 0}
+.s1{border-color:var(--heel);color:var(--heel)}.s2{background:var(--ok);border-color:var(--ok);color:#fff}
+.bar{height:10px;background:var(--soft);border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--red))}
+svg{width:100%;height:auto;display:block;margin:8px 0}
+.skill{display:grid;grid-template-columns:minmax(0,380px) 1fr;gap:16px;align-items:start}
+.skill svg{margin:0;border-radius:12px;font-size:11px;font-weight:600;border:1px solid var(--line)}
+@media(prefers-color-scheme:dark){.skill svg{filter:brightness(.88)}}
+input[type=date]{font:inherit;padding:6px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+@media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr)}.skill{grid-template-columns:1fr}h1{font-size:20px}}
+</style>
+</head>
+<body>
+<div class="hero"><svg viewBox="0 0 1200 300" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+<circle cx="960" cy="70" r="34" fill="var(--sun)" opacity=".9"/>
+<path d="M0 300V190L90 140L170 175L280 95L380 165L470 120L560 170L680 80L790 160L880 125L980 175L1090 105L1200 165V300Z" fill="var(--m1)"/>
+<path d="M280 95L252 115L267 111L279 121L291 110L305 112ZM680 80L650 102L666 98L679 109L692 97L707 100ZM1090 105L1062 122L1077 118L1089 128L1101 117L1117 120Z" fill="var(--cap)" opacity=".85"/>
+<path d="M0 300V230L120 150L210 205L330 125L450 215L560 150L660 210L800 110L930 215L1040 160L1130 205L1200 170V300Z" fill="var(--m2)"/>
+<path d="M120 150L90 170L105 166L118 175L130 165L142 164ZM330 125L300 145L315 141L328 152L342 142L360 148ZM560 150L532 166L547 163L559 172L571 162L585 165ZM800 110L765 135L782 131L798 143L814 132L832 136ZM1040 160L1012 174L1027 171L1039 180L1050 170L1062 171Z" fill="var(--cap)"/>
+<path d="M0 300V255L150 225L300 250L480 215L640 255L820 225L1000 255L1200 220V300Z" fill="var(--m3)"/>
+<path d="M0 300V270C200 240 400 290 600 268S1000 240 1200 272V300Z" fill="var(--bg)"/>
+<g><rect x="-9" y="-5" width="18" height="4" rx="2" fill="var(--red)"/><circle cy="-10" r="4" fill="var(--m3)"/><animateMotion dur="18s" repeatCount="indefinite" rotate="auto" path="M-20 272C200 240 400 290 600 268S1000 240 1220 274"/></g>
+<g id="flakes" fill="#fff"></g>
+</svg></div>
+<svg style="position:absolute;width:0;height:0" aria-hidden="true"><defs><pattern id="cord" width="5" height="5" patternUnits="userSpaceOnUse"><path d="M2.5 0V5" stroke="#cfe0ee" stroke-width="1"/></pattern></defs></svg>
+<header id="head"></header>
+<nav id="nav"></nav>
+<main id="app"></main>
+<script>
+// ---------- state & dates ----------
+const KEY='redready.v2';
+const S=Object.assign({lang:'en',start:null,trip:'2027-01-30',chk:{},done:{},fb:{},skill:{}},JSON.parse(localStorage.getItem(KEY)||'{}'));
+const save=()=>localStorage.setItem(KEY,JSON.stringify(S));
+const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const day=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const add=(s,n)=>{const d=day(s);d.setDate(d.getDate()+n);return iso(d)};
+const diff=(a,b)=>Math.round((day(a)-day(b))/864e5);
+const dow=s=>(day(s).getDay()+6)%7;
+const monday=s=>add(s,-dow(s));
+const fmt=s=>day(s).toLocaleDateString(T.loc,{day:'numeric',month:'short'});
+const TODAY=iso(new Date());
+if(!S.start){S.start=monday(TODAY);save()}
+let tab='today',sel=TODAY;
+
+// ---------- plan model (language-independent) ----------
+const TEMPLATE=['A','Z','C','B','M','I','R']; // Mon..Sun
+const nWeeks=()=>Math.max(1,Math.ceil(diff(S.trip,S.start)/7));
+const weekOf=d=>Math.floor(diff(d,S.start)/7);
+function phase(w){const n=nWeeks();if(w>=n-1)return 3;if(w>=n-4)return 2;return w<Math.ceil((n-4)/2)?0:1}
+const typeOf=d=>(d<S.start||d>=S.trip)?null:TEMPLATE[dow(d)];
+// trainer auto-adjust: each "too easy / too hard" shifts that session type by ~10%
+function lvl(t){let l=0;for(const d of Object.keys(S.fb).sort())if(typeOf(d)===t)l=Math.max(-1,Math.min(2,l+S.fb[d]));return l}
+// [sets, amount, unit] per exercise; arrays are per phase [Foundation, Build, Peak, Taper]. Texts live in C[lang].ses, same order.
+const W=[1,null,''],s3=[3,3,3,2];
+const DOSE={
+A:[W,[[3,4,3,2],[12,8,12,10],'reps'],[s3,[8,10,12,8],'reps/side'],[s3,[30,45,70,30],'s'],[s3,[15,10,14,12],'reps'],[s3,[30,45,60,30],'s'],[s3,[8,10,12,8],'reps/side']],
+B:[W,[[3,3,4,2],[12,10,10,12],'reps'],[[3,4,4,2],[10,8,10,8],'reps'],[s3,[8,10,10,6],'reps/side'],[s3,[20,30,40,20],'s/side'],[s3,[10,12,12,8],'reps/side'],[s3,[8,10,10,8],'reps/side'],[s3,[8,10,12,6],'reps']],
+C:[W,[s3,[30,30,40,30],'s/side'],[s3,[6,8,10,6],'reps/side'],[s3,[40,60,75,40],'s'],[s3,[10,14,25,10],['reps/side','reps/side','s','reps/side']],[s3,[16,24,8,12],'reps/side'],[[0,3,3,0],[0,5,6,0],'reps'],[1,8,'min']],
+Z:[[1,[30,40,45,25],'min']],
+I:[[1,[5,8,8,5],'min'],[[1,6,8,1],[40,2,1,20],'min'],[[0,0,4,0],[0,0,45,0],'s'],[1,5,'min']],
+M:[[2,45,'s/side'],[2,45,'s/side'],[2,8,'reps/side'],[3,30,'s'],[2,8,'reps/side'],[1,20,'min']],
+R:[]};
+const BOARDS=[{name:'Nitro Cinema Wide 162',len:162,w:59,f:15,b:-9},{name:'Nitro Magnum Ti Wide 171',len:171,w:61,f:18,b:-6,sb:1}];
+const SKILL_IDS=['posture','edges','steer','shape','flex','early','short','carve'];
+
+// ---------- content ----------
+const C={
+en:{loc:'en-GB',other:'Nederlands',
+ title:'Red <span>Ready</span> — your snowboard trainer',sub:'Goofy · 197 cm · 100 kg · Les Sybelles',
+ tabs:{today:'Today',plan:'Plan',stance:'Stance & gear',tech:'Technique',trip:'Trip'},
+ days:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+ phases:['Foundation','Build','Peak','Taper'],
+ phaseWhy:['Learn the movements, build the habit. Leave 2–3 reps in the tank.','More load and longer holds. This is where the legs get strong.','Snowboard-specific: leg endurance, lateral power, long efforts — like a day on the mountain.','Stay loose, arrive fresh. Do less than you want to.'],
+ u:{'reps':'reps','reps/side':'reps/side','s':'s','s/side':'s/side','min':'min'},
+ stats:['days to go','week','sessions done','red-ready'],
+ coach:'Coach',
+ tripDay:(n,t)=>`<b>Trip day ${n}: ${t[0]}.</b> Board: ${t[1]}. ${t[2]}<br><small>10-minute warm-up before the first lift, first run easy, water in your pocket.</small>`,
+ back:'<b>Welcome back.</b> Update what you nailed under Technique — and set a new trip date under Plan to start the next block.',
+ count:(left,w,n,ph,why)=>`<b>${left} days to Les Sybelles.</b> Week ${w} of ${n}, ${ph} phase. ${why}`,
+ todayDone:'Today is done. Good work — eat, sleep, repeat.',
+ skipped:(title,d)=>`You skipped <b>${title}</b> on ${d}. Today is light — make it up now.`,open:'Open it',
+ rated:(title,easy)=>`You rated ${title} “too ${easy?'easy':'hard'}” — I've ${easy?'raised':'eased'} that session type by about 10%.`,
+ none:(d,a,b)=>`No training planned for ${d} — the plan runs from ${a} until the trip on ${b}.`,
+ adjust:'trainer adjust',complete:'✓ Session complete.',how:'How was it?',fbs:['Too easy','Just right','Too hard'],undo:'Undo',finish:'Finish session',
+ block:'Your block',tripStart:'Trip start:',rescale:'The phases rescale automatically.',
+ planNote:'Six sessions a week, 20–50 minutes each. Missing one is fine — never try to "catch up" two hard sessions in one day. If you have joint or heart issues, clear the plan with your doctor first.',
+ rhythm:'Weekly rhythm',phasesH:'Phases',rulesH:'Training rules',
+ rules:['Progress when the last rep still looks like the first. Tell the coach "too easy" and it adds load for you.','Muscle soreness is fine; sharp joint pain is a stop sign.','Losing even 3–4 kg before the trip makes every turn, every fall and every get-up easier — the cardio days and ≈150 g protein a day take care of most of it.','Book 2–3 evenings at an indoor snow hall in January. Nothing off-snow replaces snow time; take the Technique drills with you.'],
+ allWeeks:'All weeks',weekTh:['#','Dates','Phase','Done'],
+ ses:{
+ A:{short:'Legs',title:'Strength A — legs & core',why:'Riding is a long isometric squat. Strong quads and a stiff trunk are what keep your turns clean at 3 pm.',ex:[
+  ['Warm-up','5 min easy movement, then 10 leg swings each way, 10 hip circles, 10 slow bodyweight squats.'],
+  [['Bodyweight squat','Goblet squat (dumbbell/backpack)','Tempo goblet squat — 3 s down','Bodyweight squat'],'Feet at snowboard-stance width, knees track over toes, chest up.'],
+  [['Reverse lunge','Reverse lunge (weighted)','Walking lunge','Reverse lunge'],'Step back softly, front knee stays over the foot.'],
+  ['Wall sit','Thighs parallel, back flat. This is your heelside-traverse muscle.'],
+  [['Calf raise','Single-leg calf raise','Single-leg calf raise','Calf raise'],'Slow up, slower down. Toeside turns live in your calves.'],
+  ['Plank','Straight line ear–hip–heel, squeeze glutes, breathe.'],
+  ['Dead bug','Lower back glued to the floor the whole time.']]},
+ B:{short:'Hips',title:'Strength B — hips, back & rotation',why:'Hamstrings and glutes protect your knees; rotational core lets you steer with the lower body while the upper body stays quiet.',ex:[
+  ['Warm-up','5 min easy movement, then 10 leg swings each way, 10 hip circles, 10 slow bodyweight squats.'],
+  [['Glute bridge','Single-leg glute bridge','Hip thrust (shoulders on sofa, weighted)','Glute bridge'],'Drive through heels, pause 1 s at the top.'],
+  ['Romanian deadlift (dumbbells or loaded backpack)','Hips back, soft knees, flat back. Feel the hamstrings load.'],
+  [['Lateral lunge','Lateral lunge','Cossack squat','Lateral lunge'],'Sit into one hip, other leg straight. Opens the hips for a wide stance.'],
+  ['Side plank','Hips high and forward. Knees down if needed.'],
+  [['Russian twist','Russian twist (weighted)','Woodchop (band or dumbbell)','Russian twist'],'Rotate from the ribs, hips stay still.'],
+  ['Bird dog',"Slow. Don't let the hips rock."],
+  ['Push-up','You will push yourself up off the snow dozens of times a day. Incline (hands on a bench) if needed.']]},
+ C:{short:'Balance',title:'Core & balance',why:'Balance is a skill, not a strength. Ten minutes of it transfers to the board faster than anything else you can do off-snow.',ex:[
+  ['Warm-up','5 min easy movement, then 10 leg swings each way, 10 hip circles, 10 slow bodyweight squats.'],
+  [['Single-leg balance','Single-leg balance, eyes closed','Single-leg balance on a cushion','Single-leg balance'],'Soft knee, quiet hips.'],
+  ['Single-leg Romanian deadlift (bodyweight)','Reach long, hinge slow. Touch a wall if you wobble.'],
+  ['Stance toe–heel rocks','Snowboard stance, half squat. Rock slowly from balls of feet to heels without straightening — rehearsing edge changes.'],
+  [['Plank shoulder taps','Plank shoulder taps','Hollow hold','Plank shoulder taps'],'No hip sway.'],
+  [['Mountain climbers','Mountain climbers','Skater bounds (side to side, stick the landing)','Mountain climbers'],'At 100 kg, land soft and low. If knees complain, swap for step-ups.'],
+  [['—','Squat jump & stick','Squat jump & stick','—'],'Small jump, land silent in riding stance, hold 2 s.'],
+  ['Mobility finisher','Hip-flexor stretch, 90/90 hips, ankle-to-wall dorsiflexion, thoracic rotations. 1 min each per side.']]},
+ Z:{short:'Cardio',title:'Stamina — steady Zone 2',why:'Aerobic base = more runs per day and faster recovery on the lift. Altitude at Les Sybelles (up to ~2600 m) taxes it further.',ex:[
+  ['Steady cardio: bike, rower, incline walk or swim','Talk-test pace: you can speak full sentences. Low-impact is kinder on the joints at your weight than running.']]},
+ I:{short:'Engine',title:'Stamina — long / intervals',why:'A snowboard run is 2–5 minutes of hard leg work, then a lift. Train that pattern.',ex:[
+  ['Easy warm-up','Gradually raise the heart rate.'],
+  [['Brisk hike, walk or easy ride','Intervals: 2 min hard / 2 min easy','Intervals: 1 min very hard / 1 min easy','Easy spin or walk'],'Hard = you can only say a few words. Bike or rower preferred.'],
+  [['—','—','Leg-burn finisher: squat hold in riding stance','—'],'30 s rest between. Stay low, keep breathing — this is the last run of the day.'],
+  ['Cool-down & stretch','Quads, hamstrings, calves, hips.']]},
+ M:{short:'Mobility',title:'Mobility & recovery',why:'Ankle and hip range lets you get low on the board. 15 minutes, no sweat.',ex:[
+  ['Ankle-to-wall stretch','Knee travels over toes, heel stays down.'],
+  ['Couch / hip-flexor stretch','Tuck the pelvis, squeeze the glute.'],
+  ['90/90 hip switches','Sit tall, rotate slowly.'],
+  ['Deep squat hold','Hold onto a door frame; pry knees out.'],
+  ['Thoracic rotation (open book)','Follow the hand with your eyes.'],
+  ['Easy walk','Optional but worth it.']]},
+ R:{short:'Rest',title:'Rest day',why:'Adaptation happens today. Sleep, eat protein (aim ≈ 150 g/day), drink water. A relaxed walk is fine.',ex:[]}},
+ svg:{back:'Left (back)',front:'Right (front)',nose:'NOSE →',tail:'tail · toe edge on top (white dot = toes)'},
+ boards:[
+ {role:'Your learning board. Shorter, softer and more forgiving — it turns easily at low speed and forgives sloppy edge changes. At 100 kg you are at the top of what a 162 likes, so it will feel loose and chattery when you go fast; that is fine for drills.',
+  rows:[['Stance width','58–60 cm — start on the reference inserts, go one hole wider if your knees feel pinched'],['Angles (goofy)','Right foot (front) +15°, left foot (back) −9°'],['Alternative','+18° / −6° if your back knee feels twisted'],['Position','Reference stance, centred heel-to-toe'],['Use it for','Days 1–4 of the trip, all drills, your first reds']]},
+ {role:'The big-guy charger. Long, stiff and damp — rock-solid at speed and built for your size, but it needs speed and commitment to bend, and it punishes back-seat riding. Bring it out once your turns are confident.',
+  rows:[['Stance width','60–62 cm on the reference inserts'],['Angles (goofy)','Right foot (front) +18°, left foot (back) −6°'],['Alternative','+21° / 0° for a carving-focused groomer day'],['Position','Keep the reference setback — it is a directional board, do not centre it'],['Use it for','Days 5–6: carving wide blues and fast groomed reds']]}],
+ stanceProse:`<h2>Why these numbers</h2><ul><li><b>Width:</b> a good starting width is roughly floor to mid-kneecap, a bit wider than your shoulders. At 197 cm that lands around 58–62 cm. Too narrow and you feel tippy; too wide and your knees cannot steer.</li><li><b>Angles:</b> a mild duck stance (front positive, back slightly negative) keeps hips and knees neutral, makes side-slips and falling leaf natural, and still points you forward enough to steer with the front knee. Goofy means your <b>right foot is the front foot</b>.</li><li><b>Check on the board:</b> I do not have Nitro's exact reference-stance figures for your model years — the reference inserts are marked on the topsheet. Measure centre-of-disc to centre-of-disc with a tape.</li></ul>
+ <h3>Burton Mission set-up</h3><ul><li><b>Size:</b> at your height you probably wear EU 45+ boots — that needs size L bindings. Check that the boot sits snug in the heel cup with no side gap.</li><li><b>Centre the boot:</b> strapped in, toe and heel should overhang the edges equally (about 1–2 cm each is fine on your wide boards). Slide the disc to adjust.</li><li><b>Highback:</b> rotate it so it runs parallel to the heel edge. Start with little forward lean; add a notch if heelside turns feel weak or chattery.</li><li><b>Straps:</b> ankle strap centred over the boot, toe strap cupping the front of the toe, not sitting on top.</li><li><b>Every morning:</b> check all disc screws are tight. Heavy riders loosen hardware quickly.</li></ul>
+ <h3>Worth packing</h3><ul><li>Helmet, wrist guards and impact shorts — they let you commit to new moves without fear of the fall.</li><li>A pocket multi-tool for stance tweaks on the hill. Change one thing at a time and ride three runs before judging.</li></ul>`,
+ sk:['Not yet','Practising','Solid'],redH:'Red-ready',
+ techIntro:'Work through the skills in order on snow. Tap the button on each to track it. One focus per run — never three.',
+ gfx:{nose:'← nose',back:'✗ back seat',side:'side view',speed:'speed',down:'downhill',toe:'toe edge',heel:'heel edge',stiff:'✗ stiff',stacked:'✓ soft & stacked',slide:'slide',stop:'stop',front:'front knee leads',round:'✓ round C = control',zig:'✗ Z = speed',tall:'tall = edge change',low:'low = turn finish',here:'change edge here',late:'too late',corridor:'≈ 5 m corridor',skid:'skid: wide smear',carve:'carve: pencil line'},
+ skills:[
+ ['1 · Stacked stance','Everything else fails without this.',['Ankles, knees and hips all flexed — like sitting on a tall bar stool.','Weight 50/50, or slightly on the front (right) foot. Never the back foot.','Shoulders and hips in line with the board, hands low and quiet over nose and tail.','Eyes up, looking where you want to go — not at the board.'],'Drill: on a gentle blue, ride a traverse touching both knees with your hands, then stand tall, then low again. Find the middle.'],
+ ['2 · Edge control: side-slip & falling leaf','Your brakes and your escape hatch on any red.',['Side-slip on toes and on heels for 30 m each, dead straight, smooth speed.','Control speed by tilting the edge with ankles and knees, not by leaning the body uphill.','Falling leaf on both edges — this also teaches you a little switch riding.'],'Drill: side-slip, stop completely, release, stop. Five stops per edge on the steepest part of a blue.'],
+ ['3 · Steer with the front foot','The fix for "kicking" the back foot around.',['To start a toeside turn: press the right big toe down and drive the right knee toward the nose and into the turn.','To start a heelside turn: lift the right toes and open the right knee toward the heel edge.','The back foot follows a split second later — it never leads.'],'Drill: garlands. Traverse, let the nose drop toward the fall line by pedalling the front foot, then steer back to the same edge. 5 per side before linking.'],
+ ['4 · Turn shape = speed control','On reds you control speed by finishing turns, not by braking.',['Draw round C-shapes. Keep steering until the board points across the hill (even slightly uphill).','Count "1-2-3" evenly through every turn: start – fall line – finish.','Feeling fast? Finish the turn more. Do not skid sideways.'],'Drill: funnel. Start with huge turns using the whole piste and make each one a bit smaller for 10 turns, then grow them again.'],
+ ['5 · Flex & extend','Pressure control — grip and smoothness.',['Extend (stand taller) as you start the turn to make the edge change light.','Sink progressively through the second half of the turn to load the edge and absorb chatter.','On steeper pitches reverse it later: stay low and change edges by pulling the knees up.'],'Drill: exaggerate it. Tall at every edge change, touching your boots at every turn finish.'],
+ ['6 · Early edge change','The single biggest difference between blue and red riding.',['Change to the new edge while the board still points across the hill — before the fall line.','It feels like falling downhill for a moment. Commit: shoulders stay level with the slope, weight on the front foot.','If you wait until the board points straight down, you pick up speed and panic-skid.'],'Drill: on an easy blue, at the end of each turn hop gently from the old edge to the new one while still traversing.'],
+ ['7 · Short turns in a corridor','Your steep-slope tool.',['Pick a corridor about one groomer-track wide (≈ 5 m) and stay inside it.','Quick rhythm: legs rotate under a quiet upper body facing down the corridor.','Each turn ends with a brief firm edge set — that is the speed check.'],'Drill: 10 short turns, 3 big turns, 10 short turns. Count out loud to keep the rhythm.'],
+ ['8 · First carves','Riding the edge instead of skidding. This is where it gets addictive.',['Gentle wide blue, moderate speed. Tilt the board with knees and ankles and just wait — let the sidecut turn you.','Look back at your track: a thin pencil line means carving, a wide smear means skidding.','Toeside: hips forward and over the edge. Heelside: sit down into it, chest up — do not fold at the waist.'],'Drill: carved traverses across the hill first, then single carved J-turns, then link two.']],
+ fixH:'Fix-it guide',fixTh:['What you feel','Usual cause','Fix'],
+ fixes:[['Back foot swings round, turns feel like windscreen wipers','Steering with the upper body and back leg','Skill 3 — garlands, front knee leads'],['Speed runs away on steeper bits','Weight on the back foot; turns not finished','Skill 4 — finish across the hill; press the front shin into the boot'],['Heelside chatters and skips','Legs straight, bent at the waist','Bend knees, sit lower, chest up; add one notch of highback forward lean'],['Toeside feels blind and scary','Bending forward instead of pushing hips over the edge','Hips forward, shins into boot tongues, look over the front shoulder'],['Catching edges on flats and cat tracks','Riding a flat base with stiff legs','Keep a tiny bit of toe or heel edge engaged; stay soft']],
+ testH:'The red-ready test',testIntro:'Tick all of these on a blue and a groomed red is well within reach.',
+ tests:['Link turns top to bottom on any blue without stopping','Quick controlled stop on both toe and heel edge','Side-slip the steepest blue pitch on both edges, in a straight line','10 short turns inside a one-groomer-wide corridor','Change turn size on command: big, medium, small','Ride a blue cat track without catching an edge','Still riding with good posture on the last run of the day'],
+ dayN:'Day',
+ tripIntro:d=>`<h2>Les Sybelles game plan</h2><p>A big linked area of six villages with a lot of wide, mellow blues — a very good place to make this step. From ${d}.</p><ul><li><b>Flats:</b> the link pistes between sectors have long flat stretches. Carry speed in, stay low on a nearly flat base with a hint of edge, and expect to unstrap now and then. Practise one-foot skating on day 1.</li><li><b>Pick reds by condition, not by name:</b> wide, groomed that morning, in the sun, before 11:00. The same red at 15:30 — scraped and bumped — is a different slope. Check the current piste map and grooming report on the day.</li><li><b>Energy:</b> most injuries happen late in the afternoon. Stop one run early, every day.</li></ul>`,
+ trip:[
+ ['Find your feet','Cinema','Easy greens and blues. Skills 1–2: posture, side-slips, stops. Check bindings and stance width feel right. Stop while you are still fresh.'],
+ ['Turn shape','Cinema','Wide blues. Skills 3–4: front-foot steering, garlands, funnel turns. Aim for full runs with no stops.'],
+ ['Get dynamic','Cinema','Steeper blues. Skills 5–6: flex/extend and early edge change. Ideal day for a 2-hour private lesson — an instructor will fix in an hour what takes a week alone.'],
+ ['First red','Cinema','Run the red-ready test on a blue first. Then choose a wide, freshly groomed red before 11:00, look at it from the lift, and ride it with skill 7. Side-slipping the steep bit is allowed. Lap it three times.'],
+ ['Carve & charge','Magnum Ti','Morning on wide blues with the Magnum: skill 8, first carves. Afternoon: two or three different reds.'],
+ ['Tour day','Your pick','Ride across the linked sectors with your friends and enjoy what you built. Agree on a last run before you take it — never "one more".']],
+ mornings:`<h2>Every morning</h2><ul><li>10 minutes before the first lift: leg swings, squats, hip circles, torso twists.</li><li>First run is always an easy one.</li><li>Pick one skill for the day and say it out loud on the lift.</li><li>Ask a friend to film two turns from below. Compare it with the Fix-it guide in the evening.</li></ul>`},
+
+nl:{loc:'nl-NL',other:'English',
+ title:'Red <span>Ready</span> — jouw snowboardtrainer',sub:'Goofy · 197 cm · 100 kg · Les Sybelles',
+ tabs:{today:'Vandaag',plan:'Schema',stance:'Stance & materiaal',tech:'Techniek',trip:'Reis'},
+ days:['Ma','Di','Wo','Do','Vr','Za','Zo'],
+ phases:['Basis','Opbouw','Piek','Taper'],
+ phaseWhy:['Leer de bewegingen en bouw de gewoonte op. Hou 2–3 herhalingen over.','Meer belasting en langer vasthouden. Hier worden je benen sterk.','Snowboardspecifiek: uithoudingsvermogen in de benen, zijwaartse kracht, lange inspanningen — zoals een dag op de berg.','Blijf soepel en kom fris aan. Doe minder dan je zou willen.'],
+ u:{'reps':'herh.','reps/side':'herh. per kant','s':'s','s/side':'s per kant','min':'min'},
+ stats:['dagen te gaan','week','sessies gedaan','red-ready'],
+ coach:'Coach',
+ tripDay:(n,t)=>`<b>Reisdag ${n}: ${t[0]}.</b> Board: ${t[1]}. ${t[2]}<br><small>10 minuten warming-up vóór de eerste lift, eerste afdaling rustig, water in je zak.</small>`,
+ back:'<b>Welkom terug.</b> Werk onder Techniek bij wat je onder de knie hebt — en stel onder Schema een nieuwe reisdatum in voor het volgende blok.',
+ count:(left,w,n,ph,why)=>`<b>Nog ${left} dagen tot Les Sybelles.</b> Week ${w} van ${n}, fase ${ph}. ${why}`,
+ todayDone:'Vandaag zit erop. Goed gedaan — eten, slapen, herhalen.',
+ skipped:(title,d)=>`Je hebt <b>${title}</b> op ${d} overgeslagen. Vandaag is een lichte dag — haal hem nu in.`,open:'Openen',
+ rated:(title,easy)=>`Je vond ${title} “te ${easy?'makkelijk':'zwaar'}” — ik heb dat type sessie ongeveer 10% ${easy?'zwaarder':'lichter'} gemaakt.`,
+ none:(d,a,b)=>`Geen training gepland op ${d} — het schema loopt van ${a} tot de reis op ${b}.`,
+ adjust:'aanpassing trainer',complete:'✓ Sessie afgerond.',how:'Hoe ging het?',fbs:['Te makkelijk','Precies goed','Te zwaar'],undo:'Ongedaan maken',finish:'Sessie afronden',
+ block:'Jouw blok',tripStart:'Start reis:',rescale:'De fases schalen automatisch mee.',
+ planNote:'Zes sessies per week van 20–50 minuten. Eentje missen is niet erg — probeer nooit twee zware sessies op één dag "in te halen". Heb je gewrichts- of hartklachten, overleg het schema dan eerst met je huisarts.',
+ rhythm:'Weekritme',phasesH:'Fases',rulesH:'Trainingsregels',
+ rules:['Ga zwaarder zodra je laatste herhaling er nog net zo uitziet als je eerste. Zeg tegen de coach "te makkelijk" en die verhoogt de belasting voor je.','Spierpijn is prima; scherpe pijn in een gewricht is een stopteken.','Zelfs 3–4 kg afvallen vóór de reis maakt elke bocht, elke val en elke keer opstaan makkelijker — de cardiodagen en ≈150 g eiwit per dag regelen het meeste.','Boek in januari 2–3 avonden in een indoor-skihal. Niets buiten de sneeuw vervangt sneeuwtijd; neem de techniekoefeningen mee.'],
+ allWeeks:'Alle weken',weekTh:['#','Data','Fase','Gedaan'],
+ ses:{
+ A:{short:'Benen',title:'Kracht A — benen & core',why:'Snowboarden is één lange isometrische squat. Sterke bovenbenen en een stevige romp houden je bochten om 15:00 uur nog strak.',ex:[
+  ['Warming-up','5 min rustig bewegen, daarna 10 beenzwaaien per kant, 10 heupcirkels en 10 rustige squats.'],
+  [['Squat (lichaamsgewicht)','Goblet squat (dumbbell/rugzak)','Tempo goblet squat — 3 s zakken','Squat (lichaamsgewicht)'],'Voeten op snowboardbreedte, knieën boven de tenen, borst omhoog.'],
+  [['Reverse lunge','Reverse lunge (met gewicht)','Walking lunge','Reverse lunge'],'Stap zacht naar achteren, voorste knie blijft boven de voet.'],
+  ['Wall sit','Bovenbenen horizontaal, rug plat tegen de muur. Dit is je spier voor de heelside-traverse.'],
+  [['Kuitheffen','Kuitheffen op één been','Kuitheffen op één been','Kuitheffen'],'Rustig omhoog, nog rustiger omlaag. Toeside-bochten zitten in je kuiten.'],
+  ['Plank','Rechte lijn oor–heup–hiel, bilspieren aan, blijven ademen.'],
+  ['Dead bug','Onderrug de hele tijd tegen de vloer gedrukt.']]},
+ B:{short:'Heupen',title:'Kracht B — heupen, rug & rotatie',why:'Hamstrings en bilspieren beschermen je knieën; een sterke rotatie-core laat je sturen met je onderlichaam terwijl je bovenlichaam rustig blijft.',ex:[
+  ['Warming-up','5 min rustig bewegen, daarna 10 beenzwaaien per kant, 10 heupcirkels en 10 rustige squats.'],
+  [['Glute bridge','Glute bridge op één been','Hip thrust (schouders op de bank, met gewicht)','Glute bridge'],'Duw door je hielen, bovenin 1 s vasthouden.'],
+  ['Romanian deadlift (dumbbells of volle rugzak)','Heupen naar achteren, knieën licht gebogen, rug recht. Voel je hamstrings op spanning komen.'],
+  [['Zijwaartse lunge','Zijwaartse lunge','Cossack squat','Zijwaartse lunge'],'Zak in één heup, andere been gestrekt. Maakt je heupen los voor een brede stance.'],
+  ['Zijplank','Heupen hoog en naar voren. Knieën op de grond mag.'],
+  [['Russian twist','Russian twist (met gewicht)','Woodchop (elastiek of dumbbell)','Russian twist'],'Draai vanuit je ribben, heupen blijven stil.'],
+  ['Bird dog','Langzaam. Laat je heupen niet wiebelen.'],
+  ['Push-up','Je duwt jezelf tientallen keren per dag op uit de sneeuw. Zet je handen op een bankje als het te zwaar is.']]},
+ C:{short:'Balans',title:'Core & balans',why:'Balans is een vaardigheid, geen kracht. Tien minuten balans oefenen levert op het board meer op dan wat je verder ook buiten de sneeuw doet.',ex:[
+  ['Warming-up','5 min rustig bewegen, daarna 10 beenzwaaien per kant, 10 heupcirkels en 10 rustige squats.'],
+  [['Balanceren op één been','Balanceren op één been, ogen dicht','Balanceren op één been op een kussen','Balanceren op één been'],'Knie licht gebogen, heupen rustig.'],
+  ['Romanian deadlift op één been (lichaamsgewicht)','Reik ver, scharnier langzaam. Raak een muur aan als je wankelt.'],
+  ['Teen–hiel-wiegen in stance','Snowboardstance, halve squat. Wieg langzaam van je voorvoeten naar je hielen zonder je benen te strekken — zo oefen je kantwissels.'],
+  [['Plank met schoudertikken','Plank met schoudertikken','Hollow hold','Plank met schoudertikken'],'Heupen bewegen niet mee.'],
+  [['Mountain climbers','Mountain climbers','Schaatssprongen (zijwaarts, landing vasthouden)','Mountain climbers'],'Met 100 kg: land zacht en laag. Protesteren je knieën, doe dan step-ups.'],
+  [['—','Squat jump & vasthouden','Squat jump & vasthouden','—'],'Kleine sprong, geruisloos landen in je rijhouding, 2 s vasthouden.'],
+  ['Mobiliteit tot slot','Heupbuigerstretch, 90/90-heupen, enkel-naar-muur, bovenrugrotaties. 1 min per oefening per kant.']]},
+ Z:{short:'Cardio',title:'Conditie — rustige zone 2',why:'Een aerobe basis betekent meer afdalingen per dag en sneller herstel in de lift. De hoogte van Les Sybelles (tot ca. 2600 m) vraagt er nog meer van.',ex:[
+  ['Rustige cardio: fiets, roeier, wandelen op een helling of zwemmen','Praattempo: je kunt nog hele zinnen zeggen. Met jouw gewicht is low-impact vriendelijker voor je gewrichten dan hardlopen.']]},
+ I:{short:'Motor',title:'Conditie — lang / intervallen',why:'Een afdaling is 2–5 minuten hard werken met je benen, daarna een lift. Train dat patroon.',ex:[
+  ['Rustige warming-up','Laat je hartslag geleidelijk oplopen.'],
+  [['Stevige wandeling, hike of rustige fietstocht','Intervallen: 2 min hard / 2 min rustig','Intervallen: 1 min heel hard / 1 min rustig','Rustig fietsen of wandelen'],'Hard = je krijgt er nog maar een paar woorden uit. Bij voorkeur op de fiets of roeier.'],
+  [['—','—','Benen-in-brand-finisher: squat vasthouden in rijhouding','—'],'30 s rust ertussen. Blijf laag, blijf ademen — dit is de laatste afdaling van de dag.'],
+  ['Cooling-down & stretchen','Bovenbenen, hamstrings, kuiten, heupen.']]},
+ M:{short:'Mobiliteit',title:'Mobiliteit & herstel',why:'Beweeglijke enkels en heupen laten je laag op je board zitten. 15 minuten, zonder zweten.',ex:[
+  ['Enkel-naar-muur-stretch','Knie beweegt over de tenen, hiel blijft op de grond.'],
+  ['Couch stretch / heupbuigerstretch','Kantel je bekken, span je bil aan.'],
+  ['90/90-heupwissels','Zit rechtop, draai langzaam.'],
+  ['Diepe squat vasthouden','Hou een deurpost vast; duw je knieën naar buiten.'],
+  ['Bovenrugrotatie (open boek)','Volg je hand met je ogen.'],
+  ['Rustige wandeling','Optioneel, maar de moeite waard.']]},
+ R:{short:'Rust',title:'Rustdag',why:'Vandaag word je sterker. Slapen, eiwitten eten (richt op ≈ 150 g per dag), water drinken. Een ontspannen wandeling mag.',ex:[]}},
+ svg:{back:'Links (achter)',front:'Rechts (voor)',nose:'NOSE →',tail:'tail · teenkant boven (witte stip = tenen)'},
+ boards:[
+ {role:'Je leerboard. Korter, zachter en vergevingsgezinder — het draait makkelijk op lage snelheid en vergeeft slordige kantwissels. Met 100 kg zit je aan de bovengrens van wat een 162 prettig vindt, dus op snelheid voelt het los en gaat het trillen; voor oefeningen is dat prima.',
+  rows:[['Stancebreedte','58–60 cm — begin op de referentie-inserts, ga één gat breder als je knieën bekneld aanvoelen'],['Hoeken (goofy)','Rechtervoet (voor) +15°, linkervoet (achter) −9°'],['Alternatief','+18° / −6° als je achterste knie gedraaid aanvoelt'],['Positie','Referentiestance, gecentreerd tussen teen- en hielkant'],['Gebruik het voor','Dag 1–4 van de reis, alle oefeningen, je eerste rode pistes']]},
+ {role:'Het kanon voor grote rijders. Lang, stijf en gedempt — rotsvast op snelheid en gebouwd voor jouw postuur, maar het heeft snelheid en lef nodig om te buigen en straft achteroverhangen af. Pak het zodra je bochten zelfverzekerd zijn.',
+  rows:[['Stancebreedte','60–62 cm op de referentie-inserts'],['Hoeken (goofy)','Rechtervoet (voor) +18°, linkervoet (achter) −6°'],['Alternatief','+21° / 0° voor een carvedag op strakke pistes'],['Positie','Hou de referentie-setback aan — het is een directioneel board, centreer het niet'],['Gebruik het voor','Dag 5–6: carven op brede blauwe en snelle geprepareerde rode pistes']]}],
+ stanceProse:`<h2>Waarom deze getallen</h2><ul><li><b>Breedte:</b> een goede startbreedte is ongeveer de afstand van de vloer tot het midden van je knieschijf, iets breder dan je schouders. Bij 197 cm kom je uit rond 58–62 cm. Te smal en je voelt je wankel; te breed en je knieën kunnen niet meer sturen.</li><li><b>Hoeken:</b> een milde duck stance (voor positief, achter licht negatief) houdt heupen en knieën neutraal, maakt side-slippen en falling leaf natuurlijk, en wijst je toch genoeg naar voren om met je voorste knie te sturen. Goofy betekent dat je <b>rechtervoet de voorste voet</b> is.</li><li><b>Controleer op het board:</b> ik heb de exacte referentiematen van Nitro voor jouw modeljaren niet — de referentie-inserts staan op de topsheet gemarkeerd. Meet met een meetlint van midden disc tot midden disc.</li></ul>
+ <h3>Burton Mission afstellen</h3><ul><li><b>Maat:</b> met jouw lengte heb je waarschijnlijk schoenmaat EU 45+ — daar hoort bindingmaat L bij. Controleer of de schoen strak in de heelcup zit, zonder ruimte aan de zijkanten.</li><li><b>Schoen centreren:</b> vastgeklikt moeten tenen en hiel evenveel over de kanten uitsteken (ongeveer 1–2 cm per kant is prima op jouw wide boards). Verschuif de disc om bij te stellen.</li><li><b>Highback:</b> draai hem zo dat hij parallel loopt aan de hielkant. Begin met weinig forward lean; zet er een tandje bij als heelside-bochten zwak of stuiterig aanvoelen.</li><li><b>Straps:</b> enkelstrap midden over de schoen, teenstrap vóór om de neus van de schoen, niet er bovenop.</li><li><b>Elke ochtend:</b> controleer of alle discschroeven vastzitten. Bij zware rijders trilt alles sneller los.</li></ul>
+ <h3>Meenemen loont</h3><ul><li>Helm, polsbeschermers en een valbroek — daarmee durf je nieuwe bewegingen aan zonder angst voor de val.</li><li>Een zak-multitool om je stance op de piste bij te stellen. Verander één ding tegelijk en rij drie afdalingen voor je oordeelt.</li></ul>`,
+ sk:['Nog niet','Aan het oefenen','Beheerst'],redH:'Red-ready',
+ techIntro:'Werk de vaardigheden op volgorde af in de sneeuw. Tik op de knop om bij te houden hoe ver je bent. Eén focuspunt per afdaling — nooit drie.',
+ gfx:{nose:'← nose',back:'✗ achterover',side:'zijaanzicht',speed:'snelheid',down:'dalwaarts',toe:'teenkant',heel:'hielkant',stiff:'✗ stijf',stacked:'✓ soepel & in balans',slide:'glijden',stop:'stop',front:'voorste knie stuurt',round:'✓ ronde C = controle',zig:'✗ Z = snelheid',tall:'lang = kantwissel',low:'laag = einde bocht',here:'wissel hier van kant',late:'te laat',corridor:'corridor ≈ 5 m',skid:'slippen: breed spoor',carve:'carven: potloodlijn'},
+ skills:[
+ ['1 · Gestapelde houding','Zonder dit werkt de rest niet.',['Enkels, knieën en heupen allemaal gebogen — alsof je op een hoge barkruk zit.','Gewicht 50/50, of iets meer op je voorste (rechter)voet. Nooit op je achterste voet.','Schouders en heupen in lijn met het board, handen laag en rustig boven nose en tail.','Ogen omhoog, kijk waar je heen wilt — niet naar je board.'],'Oefening: rij op een makkelijke blauwe piste een traverse en raak met je handen je knieën aan, ga dan lang staan, dan weer laag. Zoek het midden.'],
+ ['2 · Kantcontrole: side-slip & falling leaf','Je remmen en je nooduitgang op elke rode piste.',['Side-slip 30 m op je tenen en 30 m op je hielen, kaarsrecht en met gelijkmatige snelheid.','Regel je snelheid door de kant te kantelen met enkels en knieën, niet door met je lichaam naar de berg te hangen.','Falling leaf op beide kanten — daarmee leer je meteen een beetje switch rijden.'],'Oefening: side-slip, helemaal stoppen, loslaten, stoppen. Vijf stops per kant op het steilste stuk van een blauwe piste.'],
+ ['3 · Sturen met je voorste voet','De oplossing voor het "wegtrappen" van je achterste voet.',['Toeside-bocht inzetten: druk je rechter grote teen omlaag en duw je rechterknie richting nose en de bocht in.','Heelside-bocht inzetten: trek je rechtertenen op en open je rechterknie richting hielkant.','Je achterste voet volgt een fractie later — die leidt nooit.'],'Oefening: garlands. Rij een traverse, laat de nose richting vallijn zakken door met je voorste voet te "pedaleren" en stuur terug naar dezelfde kant. 5 per kant voordat je bochten aan elkaar rijgt.'],
+ ['4 · Bochtvorm = snelheidscontrole','Op rood regel je je snelheid door bochten af te maken, niet door te remmen.',['Teken ronde C-vormen. Blijf sturen tot het board dwars op de helling staat (zelfs een beetje bergop).','Tel gelijkmatig "1-2-3" door elke bocht: inzet – vallijn – afmaken.','Voelt het snel? Maak de bocht verder af. Niet zijwaarts wegslippen.'],'Oefening: trechter. Begin met enorme bochten over de hele pistebreedte en maak ze 10 bochten lang telkens iets kleiner, daarna weer groter.'],
+ ['5 · Buigen & strekken','Drukcontrole — grip en souplesse.',['Strek (kom omhoog) bij de inzet van de bocht om de kantwissel licht te maken.','Zak geleidelijk door de tweede helft van de bocht om de kant te belasten en trillingen op te vangen.','Op steilere stukken draai je het later om: blijf laag en wissel van kant door je knieën op te trekken.'],'Oefening: overdrijf het. Lang bij elke kantwissel, schoenen aantikken aan het eind van elke bocht.'],
+ ['6 · Vroege kantwissel','Het grootste verschil tussen blauw en rood rijden.',['Wissel naar de nieuwe kant terwijl het board nog dwars op de helling staat — vóór de vallijn.','Het voelt even alsof je dalwaarts valt. Ga ervoor: schouders parallel aan de helling, gewicht op je voorste voet.','Wacht je tot het board recht naar beneden wijst, dan maak je snelheid en ga je in paniek slippen.'],'Oefening: maak op een makkelijke blauwe piste aan het eind van elke bocht een klein sprongetje van de oude naar de nieuwe kant, terwijl je nog traverseert.'],
+ ['7 · Korte bochten in een corridor','Je gereedschap voor steile stukken.',['Kies een corridor van ongeveer één pistenbullyspoor breed (≈ 5 m) en blijf erbinnen.','Snel ritme: je benen draaien onder een rustig bovenlichaam dat de corridor in kijkt.','Elke bocht eindigt met een korte, stevige kantinzet — dat is je snelheidscheck.'],'Oefening: 10 korte bochten, 3 grote, 10 korte. Tel hardop om het ritme vast te houden.'],
+ ['8 · Je eerste carves','Op de kant rijden in plaats van slippen. Hier wordt het verslavend.',['Brede, vlakke blauwe piste, matige snelheid. Kantel het board met knieën en enkels en wacht gewoon — laat de sidecut je draaien.','Kijk terug naar je spoor: een dunne potloodlijn is carven, een breed uitgesmeerd spoor is slippen.','Toeside: heupen naar voren en boven de kant. Heelside: ga erin zitten, borst omhoog — niet dubbelklappen in je middel.'],'Oefening: eerst gecarvede traverses dwars over de helling, dan losse gecarvede J-bochten, dan twee aan elkaar.']],
+ fixH:'Probleemoplosser',fixTh:['Wat je voelt','Meestal de oorzaak','Oplossing'],
+ fixes:[['Achterste voet zwaait rond, bochten voelen als ruitenwissers','Sturen met je bovenlichaam en achterste been','Vaardigheid 3 — garlands, voorste knie stuurt'],['Snelheid loopt uit de hand op steilere stukken','Gewicht op je achterste voet; bochten niet afgemaakt','Vaardigheid 4 — afmaken dwars op de helling; druk je voorste scheen in de schoen'],['Heelside trilt en stuitert','Benen gestrekt, voorovergebogen in je middel','Knieën buigen, lager zitten, borst omhoog; één tandje meer forward lean op de highback'],['Toeside voelt blind en eng','Voorover buigen in plaats van je heupen boven de kant duwen','Heupen naar voren, schenen in de tong van je schoenen, kijk over je voorste schouder'],['Kanten haken op vlakke stukken en ziehwegen','Vlak rijden met stijve benen','Hou altijd een klein beetje teen- of hielkant vast; blijf soepel']],
+ testH:'De red-ready-test',testIntro:'Vink je deze allemaal af op een blauwe piste, dan ligt een geprepareerde rode binnen bereik.',
+ tests:['Bochten aan elkaar rijden van boven tot onder op elke blauwe piste, zonder te stoppen','Snel en gecontroleerd stoppen op zowel teen- als hielkant','Het steilste stuk van een blauwe piste side-slippen op beide kanten, in een rechte lijn','10 korte bochten binnen een corridor van één pistenbullyspoor','Bochtgrootte wisselen op commando: groot, middel, klein','Een blauw ziehweg rijden zonder een kant te haken','Op de laatste afdaling van de dag nog steeds rijden met een goede houding'],
+ dayN:'Dag',
+ tripIntro:d=>`<h2>Plan voor Les Sybelles</h2><p>Een groot aaneengesloten gebied van zes dorpen met veel brede, vlakke blauwe pistes — een heel goede plek om deze stap te zetten. Vanaf ${d}.</p><ul><li><b>Vlakke stukken:</b> de verbindingspistes tussen de sectoren hebben lange vlakke stukken. Neem snelheid mee, blijf laag op een bijna vlak board met een vleugje kant, en reken erop dat je af en toe moet losklikken. Oefen steppen met één voet op dag 1.</li><li><b>Kies rode pistes op conditie, niet op naam:</b> breed, die ochtend geprepareerd, in de zon, vóór 11:00 uur. Dezelfde rode om 15:30 uur — kaalgeschraapt en vol bulten — is een andere piste. Bekijk op de dag zelf de actuele pistekaart en het preparatierapport.</li><li><b>Energie:</b> de meeste blessures gebeuren laat in de middag. Stop elke dag één afdaling te vroeg.</li></ul>`,
+ trip:[
+ ['Erin komen','Cinema','Makkelijke groene en blauwe pistes. Vaardigheid 1–2: houding, side-slips, stoppen. Check of bindingen en stancebreedte goed voelen. Stop terwijl je nog fris bent.'],
+ ['Bochtvorm','Cinema','Brede blauwe pistes. Vaardigheid 3–4: sturen met de voorste voet, garlands, trechterbochten. Doel: hele afdalingen zonder te stoppen.'],
+ ['Dynamisch worden','Cinema','Steilere blauwe pistes. Vaardigheid 5–6: buigen/strekken en vroege kantwissel. Ideale dag voor 2 uur privéles — een instructeur lost in een uur op waar je alleen een week over doet.'],
+ ['Eerste rode','Cinema','Doe eerst de red-ready-test op een blauwe piste. Kies dan vóór 11:00 uur een brede, vers geprepareerde rode, bekijk hem vanuit de lift en rij hem met vaardigheid 7. Het steile stuk side-slippen mag. Rij hem drie keer.'],
+ ['Carven & gas geven','Magnum Ti','Ochtend op brede blauwe pistes met de Magnum: vaardigheid 8, je eerste carves. Middag: twee of drie verschillende rode pistes.'],
+ ['Tourdag','Jouw keuze','Trek met je vrienden door de verbonden sectoren en geniet van wat je hebt opgebouwd. Spreek een laatste afdaling af vóórdat je hem rijdt — nooit "nog eentje".']],
+ mornings:`<h2>Elke ochtend</h2><ul><li>10 minuten vóór de eerste lift: beenzwaaien, squats, heupcirkels, romprotaties.</li><li>De eerste afdaling is altijd een makkelijke.</li><li>Kies één vaardigheid voor de dag en zeg hem hardop in de lift.</li><li>Vraag een vriend om twee bochten van onderaf te filmen. Vergelijk dat 's avonds met de Probleemoplosser.</li></ul>`}};
+let T=C[S.lang]||C.en;
+
+// ---------- sessions ----------
+const pick=(v,p)=>Array.isArray(v)?v[p]:v;
+function dose(e,p,l){const u=pick(e.u,p);let n=pick(e.n,p);if(n==null)return'';
+ n*=1+.1*l;n=u[0]==='s'?Math.round(n/5)*5:Math.max(1,Math.round(n));
+ return(e.sets>1?e.sets+' × ':'')+n+' '+T.u[u]}
+const exercises=(t,p)=>DOSE[t].map((d,i)=>({sets:pick(d[0],p),n:d[1],u:d[2],name:pick(T.ses[t].ex[i][0],p),cue:T.ses[t].ex[i][1]})).filter(e=>e.sets>0);
+function adherence(){let due=0,done=0;const end=TODAY<S.trip?TODAY:add(S.trip,-1);
+ for(let d=S.start;d<=end;d=add(d,1)){if(typeOf(d)==='R')continue;if(S.done[d]){due++;done++}else if(d<TODAY)due++}
+ return due?Math.round(100*done/due):100}
+
+// ---------- graphics ----------
+function boardSvg(b){const k=380/b.len,cx=200-(b.sb?10:0),dx=b.w*k/2,foot=(x,a,l)=>`<g transform="rotate(${a} ${x} 55)"><rect x="${x-12}" y="22" width="24" height="66" rx="8" fill="var(--blue)" opacity=".85"/><circle cx="${x}" cy="30" r="4" fill="#fff"/></g><text x="${x}" y="118" text-anchor="middle" font-size="11" fill="currentColor">${l} ${a>0?'+':''}${a}°</text>`;
+ return`<svg viewBox="0 0 400 124" role="img" aria-label="${b.name}"><rect x="10" y="28" width="380" height="54" rx="27" fill="var(--soft)" stroke="var(--line)" stroke-width="2"/>
+ ${foot(cx-dx,b.b,T.svg.back)}${foot(cx+dx,b.f,T.svg.front)}
+ <line x1="${cx-dx}" y1="100" x2="${cx+dx}" y2="100" stroke="currentColor" stroke-dasharray="3 3"/><text x="${cx}" y="97" text-anchor="middle" font-size="11" fill="currentColor">${b.w} cm</text>
+ <text x="386" y="14" text-anchor="end" font-size="11" fill="var(--red)">${T.svg.nose}</text><text x="14" y="14" font-size="11" fill="currentColor">${T.svg.tail}</text></svg>`}
+
+// Technique animations. Fixed "snow" palette (not themed). Slope is seen from above, downhill = down the screen.
+// The rider glyph is drawn nose toward +x; for a goofy rider the toe edge is then at -y, the heel edge at +y.
+const K={ink:'#12212f',mute:'#5b6b7b',ok:'#12975a',red:'#e2283f',toe:'#1f6feb',heel:'#f07f09',board:'#1b2b3f',jacket:'#7b3fe4',pants:'#26384d',gog:'#ffd76a',smear:'#9db7cf'};
+const TURNS='M160 20C240 20 240 70 160 70C80 70 80 120 160 120C240 120 240 170 160 170'; // heelside, toeside, heelside
+const txt=(x,y,s,fill=K.ink,anchor='middle')=>`<text x="${x}" y="${y}" text-anchor="${anchor}" fill="${fill}">${s}</text>`;
+const loop=(attr,dur,values,extra='')=>`<animate attributeName="${attr}" dur="${dur}s" repeatCount="indefinite" values="${values}" ${extra}/>`;
+const xform=(type,dur,values,extra='')=>`<animateTransform attributeName="transform" type="${type}" dur="${dur}s" repeatCount="indefinite" values="${values}" ${extra}/>`;
+const discrete=n=>`calcMode="discrete" keyTimes="${Array.from({length:n},(_,i)=>(i/n).toFixed(3)).join(';')}"`;
+const dashed=(d,col=K.mute,extra='')=>`<path d="${d}" fill="none" stroke="${col}" stroke-width="2" stroke-dasharray="4 4" ${extra}/>`;
+// a line that is drawn as the rider travels along it
+const trail=(d,dur,col,w=2.5,op=1)=>`<path d="${d}" fill="none" stroke="${col}" stroke-width="${w}" stroke-linecap="round" opacity="${op}" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1">${loop('stroke-dashoffset',dur,'1;0')}</path>`;
+
+// Top-view rider glyph. seq = the edge used on each equal part of the path ('t' toe / 'h' heel):
+// the engaged edge lights up and the body leans over it. Options: front (pulse the steering foot), skid, quiet (upper body keeps facing downhill).
+function glyph(dur,seq,o={}){const s=[...seq],n=s.length,on=c=>s.map(e=>e===c?1:0).join(';');
+ const edge=(c,y,col)=>`<path d="M-18 ${y}h36" stroke="${col}" stroke-width="4" stroke-linecap="round" opacity="${s[0]===c?1:0}">${n>1?loop('opacity',dur,on(c),discrete(n)):''}</path>`;
+ const spray=o.skid?[[-12,-11,0],[0,-13,.2],[12,-11,.4]].map(([x,y,b])=>`<circle cx="${x}" cy="${y}" r="2" fill="${K.smear}"><animate attributeName="r" dur=".7s" begin="${b}s" repeatCount="indefinite" values="1;6"/><animate attributeName="opacity" dur=".7s" begin="${b}s" repeatCount="indefinite" values=".9;0"/><animate attributeName="cy" dur=".7s" begin="${b}s" repeatCount="indefinite" values="${y};${y-9}"/></circle>`).join(''):'';
+ const board=`${spray}<rect x="-23" y="-6.5" width="46" height="13" rx="6.5" fill="${K.board}"/><rect x="15" y="-6.5" width="3" height="13" fill="#fff" opacity=".8"/>${edge('t',-7.5,K.toe)}${edge('h',7.5,K.heel)}
+ <rect x="6" y="-7.5" width="7" height="15" rx="2" fill="${K.mute}" transform="rotate(15 9.5 0)"/><rect x="-13" y="-7.5" width="7" height="15" rx="2" fill="${K.mute}" transform="rotate(-9 -9.5 0)"/>
+ ${o.front?`<circle cx="9.5" r="5" fill="${K.red}" opacity=".75">${loop('r',.9,'4;9;4')}${loop('opacity',.9,'.85;.25;.85')}</circle>`:''}`;
+ const body=`<path d="M-9 0L-18 -1M9 0L18 -1" stroke="${K.jacket}" stroke-width="4.5" stroke-linecap="round"/><ellipse rx="10" ry="6.5" fill="${K.jacket}"/><circle cx="3" r="5.4" fill="${K.ink}"/><path d="M6.8 -3.8A5.4 5.4 0 0 1 6.8 3.8" stroke="${K.gog}" stroke-width="2.4" fill="none"/>`;
+ const lean=[0,...s.map(e=>e==='t'?-3.5:3.5),0].map(y=>'0 '+y).join(';'),kt=[0,...s.map((_,i)=>((i+.5)/n).toFixed(3)),1].join(';');
+ return{board,body,all:`<g ${o.skid?'transform="rotate(38)"':''}>${board}<g>${xform('translate',dur,lean,`keyTimes="${kt}"`)}${body}</g></g>`}}
+function rider(d,dur,seq,o={}){const p=glyph(dur,seq,o),move=rot=>`<animateMotion dur="${dur}s" repeatCount="indefinite" ${rot?'rotate="auto"':''} path="${d}"/>`;
+ return o.quiet?`<g>${p.board}${move(1)}</g><g><g transform="rotate(90)">${p.body}</g>${move(0)}</g>`:`<g>${p.all}${move(1)}</g>`}
+
+// Rider seen from the toe side of the board (nose to the left). h = 0 standing tall … 1 fully flexed; lean > 0 = weight toward the tail.
+function pose(h,lean=0){const kx=18+10*h,ky=-26+6*h,hy=-48+18*h,sx=lean*1.3,sy=hy-30+4*h,ay=sy+22;
+ return{legs:`M-22 -8L${-kx+lean*.5} ${ky}L${lean} ${hy}L${kx+lean*.5} ${ky}L22 -8`,torso:`M${lean} ${hy}L${sx} ${sy}`,arms:`M${sx-27} ${ay}L${sx} ${sy+3}L${sx+27} ${ay}`,head:`${sx} ${sy-15}`}}
+function figure(x,y,poses,dur,keyTimes){const ps=poses.map(p=>pose(...[].concat(p))),kt=keyTimes?`keyTimes="${keyTimes}"`:'',moving=ps.length>1;
+ const part=(k,col,w)=>`<path d="${ps[0][k]}" stroke="${col}" stroke-width="${w}">${moving?loop('d',dur,ps.map(p=>p[k]).join(';'),kt):''}</path>`;
+ return`<g transform="translate(${x} ${y})" fill="none" stroke-linecap="round" stroke-linejoin="round"><ellipse cy="10" rx="48" ry="4" fill="${K.ink}" opacity=".12"/>
+ <rect x="-44" y="1" width="88" height="6" rx="3" fill="${K.board}"/><rect x="-29" y="-11" width="14" height="12" rx="3" fill="${K.mute}"/><rect x="15" y="-11" width="14" height="12" rx="3" fill="${K.mute}"/>
+ ${part('legs',K.pants,9)}${part('arms',K.jacket,6)}${part('torso',K.jacket,15)}
+ <g transform="translate(${ps[0].head})">${moving?xform('translate',dur,ps.map(p=>p.head).join(';'),kt):''}<circle r="9.5" fill="${K.ink}"/><rect x="-8" y="-3.5" width="16" height="6.5" rx="3" fill="${K.gog}"/></g></g>`}
+
+function gfx(id){const g=T.gfx;let b='';
+ if(id==='posture')b=txt(10,18,g.nose,K.mute,'start')+figure(58,142,[0])+txt(58,174,g.stiff,K.red)+figure(160,142,[[.45,13]])+txt(160,174,g.back,K.red)+figure(262,142,[.45,.75,.45],2.6)+txt(262,174,g.stacked,K.ok);
+ else if(id==='edges'){const kt='keyTimes="0;.2;.35;.55;.7;.9;1"',tilt='keyTimes="0;.17;.2;.35;.38;.52;.55;.7;.73;.87;.9;1"',flip='calcMode="discrete" keyTimes="0;.2;.35;.55;.7;.9"';
+  b=`<rect x="57" y="28" width="46" height="0" fill="${K.smear}" opacity=".4">${loop('height',6,'0;45;45;90;90;135;135',kt)}</rect>
+  <g>${xform('translate',6,'80 28;80 73;80 73;80 118;80 118;80 163;80 163',kt)}${glyph(6,'t').all}</g>
+  <rect x="150" y="26" width="160" height="150" rx="10" fill="#fff" stroke="${K.smear}"/>${txt(160,42,g.side,K.mute,'start')}
+  <path d="M158 62L302 158" stroke="${K.smear}" stroke-width="5" stroke-linecap="round"/>
+  <g transform="translate(212 98)"><g>${xform('rotate',6,'29;29;3;3;29;29;3;3;29;29;3;3',tilt)}<path d="M26 -8L22 -40" stroke="${K.pants}" stroke-width="9" stroke-linecap="round"/><rect x="14" y="-19" width="22" height="13" rx="4" fill="${K.mute}"/><rect x="0" y="-6" width="50" height="6" rx="3" fill="${K.board}"/><circle r="4" fill="${K.toe}"/></g></g>
+  <g>${loop('opacity',6,'1;0;1;0;1;0',flip)}${txt(230,168,'↓ '+g.slide,K.mute)}</g><g opacity="0">${loop('opacity',6,'0;1;0;1;0;1',flip)}${txt(230,168,'■ '+g.stop,K.red)}</g>`}
+ else if(id==='steer'){const d='M20 40c25 0 35 30 55 30c15 0 20-8 35-8c25 0 35 30 55 30c15 0 20-8 35-8c25 0 35 30 55 30c15 0 20-8 35-8';
+  b=dashed(d,K.smear)+trail(d,7,K.mute)+rider(d,7,'t',{front:1})+txt(160,176,'● '+g.front,K.red)}
+ else if(id==='shape'){const mark=(x,y,n,t)=>`<g opacity=".3">${loop('opacity',6,'.3;1',`calcMode="discrete" keyTimes="0;${t}"`)}<circle cx="${x}" cy="${y}" r="10" fill="#fff" stroke="${K.ok}" stroke-width="2"/>${txt(x,y+4,n,K.ok)}</g>`;
+  b=dashed('M70 25L250 70L70 115L250 160',K.red,'opacity=".45"')+trail(TURNS,6,K.ok,3)+mark(182,62,1,.333)+mark(88,95,2,.5)+mark(182,128,3,.667)+rider(TURNS,6,'hth')
+  +`<rect x="292" y="50" width="12" height="100" rx="6" fill="#fff" stroke="${K.smear}"/><rect x="292" y="130" width="12" height="20" rx="6" fill="${K.heel}">${loop('height',6,'20;85;20;85;20;85;20')}${loop('y',6,'130;65;130;65;130;65;130')}</rect>`
+  +txt(298,44,g.speed,K.mute)+txt(26,182,g.round,K.ok,'start')+txt(286,182,g.zig,K.red,'end')}
+ else if(id==='flex'){const d='M225 20C275 20 275 70 225 70C175 70 175 120 225 120C275 120 275 170 225 170';
+  b=dashed(d,K.smear)+trail(d,6,K.mute)+[70,120].map(y=>`<circle cx="225" cy="${y}" r="6" fill="${K.ok}"/>`).join('')+rider(d,6,'hth')
+  +figure(88,134,[.05,1,.05,1,.05,1,.05],6,'0;.3;.37;.63;.7;.96;1')+txt(88,164,'● '+g.tall,K.ok)+txt(88,180,g.low,K.mute)}
+ else if(id==='early'){const seg=(d,col)=>`<path d="${d}" fill="none" stroke="${col}" stroke-width="4" stroke-linecap="round" opacity=".55"/>`;
+  b=seg('M160 20C240 20 240 70 160 70',K.heel)+seg('M160 70C80 70 80 120 160 120',K.toe)+seg('M160 120C240 120 240 170 160 170',K.heel)
+  +[[160,70],[160,120]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="7" fill="${K.ok}">${loop('r',1.2,'5;10;5')}</circle>`).join('')
+  +[[220,45],[100,95],[220,145]].map(([x,y])=>`<path d="M${x-5} ${y-5}l10 10m0-10l-10 10" stroke="${K.red}" stroke-width="3" stroke-linecap="round"/>`).join('')
+  +rider(TURNS,7,'hth')+txt(148,64,g.here+' ●',K.ok,'end')+txt(234,49,'✗ '+g.late,K.red,'start')+txt(26,168,'▬ '+g.toe,K.toe,'start')+txt(26,182,'▬ '+g.heel,K.heel,'start')}
+ else if(id==='short'){const d='M160 15'+'c22 0 22 26 0 26c-22 0-22 26 0 26'.repeat(3);
+  b=`<path d="M126 8V182M194 8V182" stroke="${K.red}" stroke-dasharray="6 5" stroke-width="2"/>`+trail(d,5,K.mute)+rider(d,5,'hththt',{quiet:1})+txt(202,24,g.corridor,K.red,'start')}
+ else{const d='M0 20C50 20 50 70 0 70C-50 70-50 120 0 120C50 120 50 170 0 170';
+  b=`<g transform="translate(92 0)">${trail(d,6,K.smear,22,.55)}${rider(d,6,'hth',{skid:1})}</g><g transform="translate(235 0)">${trail(d,5,K.ok,2.5)}${rider(d,5,'hth')}</g>`+txt(92,184,'✗ '+g.skid,K.red)+txt(235,184,'✓ '+g.carve,K.ok)}
+ const slope=id==='posture'?`<path d="M0 152H320V190H0Z" fill="#fff"/>`:`<rect width="320" height="190" fill="url(#cord)"/>${[20,65,110,155].map(y=>`<circle cx="7" cy="${y}" r="3" fill="${K.toe}"/><circle cx="313" cy="${y}" r="3" fill="${K.toe}"/>`).join('')}<path d="M22 10v24m-5-7l5 8l5-8" fill="none" stroke="${K.mute}" stroke-width="1.5"/>${txt(32,20,g.down,K.mute,'start')}`;
+ return`<svg viewBox="0 0 320 190" role="img" aria-label="${T.skills[SKILL_IDS.indexOf(id)][0]}"><rect width="320" height="190" fill="${id==='posture'?'#dcecf8':'#f3f9fe'}"/>${slope}${b}</svg>`}
+
+// ---------- views ----------
+const el=id=>document.getElementById(id);
+function coach(){const left=diff(S.trip,TODAY),out=[];
+ if(left<=0&&left>-6)return T.tripDay(1-left,T.trip[-left]);
+ if(left<=-6)return T.back;
+ const w=weekOf(TODAY),p=phase(w),t=typeOf(TODAY);
+ out.push(T.count(left,w+1,nWeeks(),T.phases[p],T.phaseWhy[p]));
+ if(S.done[TODAY])out.push(T.todayDone);
+ else if(t==='R'||t==='M'){for(let d=monday(TODAY);d<TODAY;d=add(d,1)){const m=typeOf(d);if(m&&'ABCZI'.includes(m)&&!S.done[d]){out.push(`${T.skipped(T.ses[m].title,T.days[dow(d)])} <button data-open="${d}">${T.open}</button>`);break}}}
+ const last=Object.keys(S.fb).sort().pop();
+ if(last&&S.fb[last]&&typeOf(last))out.push(T.rated(T.ses[typeOf(last)].title,S.fb[last]>0));
+ return out.join('<br>')}
+
+function sessionHtml(d){const t=typeOf(d);
+ if(!t)return`<div class="card"><p class="mute">${T.none(fmt(d),fmt(S.start),fmt(S.trip))}</p></div>`;
+ const p=phase(weekOf(d)),s=T.ses[t],l=lvl(t),chk=S.chk[d]||[];
+ let h=`<div class="card"><span class="tag p${p}">${T.phases[p]}</span> <span class="tag">${T.days[dow(d)]} ${fmt(d)}</span>${l?` <span class="tag">${T.adjust} ${l>0?'+':''}${l*10}%</span>`:''}<h2 style="margin-top:8px">${s.title}</h2><p class="mute">${s.why}</p>`;
+ exercises(t,p).forEach((e,i)=>h+=`<label class="ex"><input type="checkbox" data-chk="${d}|${i}" ${chk.includes(i)?'checked':''}><span><b>${e.name}</b> <span class="dose">${dose(e,p,l)}</span><br><small>${e.cue}</small></span></label>`);
+ if(t!=='R'){h+=S.done[d]
+  ?`<div class="row"><b style="color:var(--ok)">${T.complete}</b> ${T.how}${[1,0,-1].map((v,i)=>`<button class="${S.fb[d]===v?'pri':''}" data-fb="${d}|${v}">${T.fbs[i]}</button>`).join('')}<button data-done="${d}">${T.undo}</button></div>`
+  :`<div class="row"><button class="pri" data-done="${d}">${T.finish}</button></div>`}
+ return h+'</div>'}
+
+function vToday(){const m=monday(sel);let strip='';
+ for(let i=0;i<7;i++){const d=add(m,i),t=typeOf(d);strip+=`<button data-open="${d}" class="${d===sel?'sel ':''}${S.done[d]?'done ':''}${d===TODAY?'today':''}"><b>${T.days[i]}</b><br>${t?T.ses[t].short:'—'}</button>`}
+ const left=Math.max(0,diff(S.trip,TODAY)),w=Math.min(nWeeks(),Math.max(1,weekOf(TODAY)+1));
+ const vals=[left,`${w}/${nWeeks()}`,adherence()+'%',redReady()+'%'];
+ return`<div class="card stats">${vals.map((v,i)=>`<div class="stat"><b>${v}</b>${T.stats[i]}</div>`).join('')}</div>
+ <div class="card coach"><h2>${T.coach}</h2><p>${coach()}</p></div>
+ <div class="card"><div class="strip">${strip}</div></div>${sessionHtml(sel)}`}
+
+function vPlan(){let rows='';const n=nWeeks(),cur=weekOf(TODAY);
+ for(let w=0;w<n;w++){const m=add(S.start,w*7);let done=0;for(let i=0;i<7;i++)if(S.done[add(m,i)])done++;
+  rows+=`<tr data-open="${m}" class="${w===cur?'now':''}"><td>${w+1}</td><td>${fmt(m)} – ${fmt(add(m,6))}</td><td class="p${phase(w)}"><b>${T.phases[phase(w)]}</b></td><td>${done}/6</td></tr>`}
+ return`<div class="card"><h2>${T.block}</h2><p>${T.tripStart} <input type="date" id="trip" value="${S.trip}" min="${add(S.start,7)}"> <small>${T.rescale}</small></p><p class="mute">${T.planNote}</p></div>
+ <div class="card"><h2>${T.rhythm}</h2><table><tbody>${TEMPLATE.map((t,i)=>`<tr><td><b>${T.days[i]}</b></td><td>${T.ses[t].title}</td></tr>`).join('')}</tbody></table>
+ <h3>${T.phasesH}</h3><ul>${T.phases.map((p,i)=>`<li><b class="p${i}">${p}</b> — ${T.phaseWhy[i]}</li>`).join('')}</ul>
+ <h3>${T.rulesH}</h3><ul>${T.rules.map(r=>`<li>${r}</li>`).join('')}</ul></div>
+ <div class="card"><h2>${T.allWeeks}</h2><table><thead><tr>${T.weekTh.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>`}
+
+function vStance(){return BOARDS.map((b,i)=>`<div class="card"><h2>${b.name}</h2><p>${T.boards[i].role}</p>${boardSvg(b)}<table>${T.boards[i].rows.map(r=>`<tr><th>${r[0]}</th><td>${r[1]}</td></tr>`).join('')}</table></div>`).join('')+`<div class="card">${T.stanceProse}</div>`}
+
+function redReady(){const tot=SKILL_IDS.length*2+T.tests.length;let got=0;SKILL_IDS.forEach(id=>got+=S.skill[id]||0);T.tests.forEach((_,i)=>got+=S.skill['t'+i]?1:0);return Math.round(100*got/tot)}
+function vTech(){const r=redReady();
+ return`<div class="card"><h2>${T.redH}: ${r}%</h2><div class="bar"><i style="width:${r}%"></i></div><p class="mute">${T.techIntro}</p></div>`+
+ T.skills.map(([t,goal,how,drill],i)=>{const id=SKILL_IDS[i],v=S.skill[id]||0;return`<div class="card"><div class="row" style="margin:0 0 8px;justify-content:space-between"><h2 style="margin:0">${t}</h2><button class="s${v}" data-skill="${id}">${T.sk[v]}</button></div><div class="skill">${gfx(id)}<div><p class="mute" style="margin-top:0">${goal}</p><ul>${how.map(x=>`<li>${x}</li>`).join('')}</ul><p><b>${drill}</b></p></div></div></div>`}).join('')+
+ `<div class="card"><h2>${T.fixH}</h2><table><thead><tr>${T.fixTh.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${T.fixes.map(f=>`<tr><td>${f[0]}</td><td>${f[1]}</td><td>${f[2]}</td></tr>`).join('')}</tbody></table></div>
+ <div class="card"><h2>${T.testH}</h2><p class="mute">${T.testIntro}</p>${T.tests.map((t,i)=>`<label class="ex"><input type="checkbox" data-test="t${i}" ${S.skill['t'+i]?'checked':''}><span>${t}</span></label>`).join('')}</div>`}
+
+function vTrip(){return`<div class="card">${T.tripIntro(fmt(S.trip))}</div>`+
+ T.trip.map((t,i)=>`<div class="card"><span class="tag">${T.dayN} ${i+1} · ${fmt(add(S.trip,i))}</span> <span class="tag">${t[1]}</span><h2 style="margin-top:8px">${t[0]}</h2><p>${t[2]}</p></div>`).join('')+`<div class="card">${T.mornings}</div>`}
+
+const VIEWS={today:vToday,plan:vPlan,stance:vStance,tech:vTech,trip:vTrip};
+function render(){document.documentElement.lang=S.lang;
+ el('head').innerHTML=`<div><h1>${T.title}</h1><small>${T.sub}</small></div><button data-lang>${T.other}</button>`;
+ el('nav').innerHTML=Object.entries(T.tabs).map(([k,v])=>`<button data-tab="${k}" class="${k===tab?'on':''}">${v}</button>`).join('');
+ el('app').innerHTML=VIEWS[tab]();
+ if(matchMedia('(prefers-reduced-motion: reduce)').matches)document.querySelectorAll('svg').forEach(s=>s.pauseAnimations())}
+
+document.addEventListener('click',e=>{const t=e.target.closest('[data-tab],[data-open],[data-done],[data-fb],[data-skill],[data-lang]');if(!t)return;const a=t.dataset;
+ if('lang' in a){S.lang=S.lang==='en'?'nl':'en';T=C[S.lang]}
+ else if(a.tab){tab=a.tab;scrollTo(0,0)}
+ else if(a.open){sel=a.open;tab='today'}
+ else if(a.done){if(S.done[a.done]){delete S.done[a.done];delete S.fb[a.done]}else S.done[a.done]=1}
+ else if(a.fb){const[d,v]=a.fb.split('|');S.fb[d]=+v}
+ else if(a.skill)S.skill[a.skill]=((S.skill[a.skill]||0)+1)%3;
+ save();render()});
+document.addEventListener('change',e=>{const a=e.target.dataset;
+ if(a.chk){const[d,i]=a.chk.split('|'),set=new Set(S.chk[d]||[]);e.target.checked?set.add(+i):set.delete(+i);S.chk[d]=[...set];save()}
+ else if(a.test){S.skill[a.test]=e.target.checked?1:0;save();render()}
+ else if(e.target.id==='trip'&&e.target.value>S.start){S.trip=e.target.value;save();render()}});
+el('flakes').innerHTML=Array.from({length:28},(_,i)=>{const x=(i*43+17)%1200,r=1+i%3,dur=9+i%7;return`<circle cx="${x}" r="${r}" opacity=".8"><animate attributeName="cy" dur="${dur}s" begin="-${i*.9}s" repeatCount="indefinite" values="-10;310"/><animate attributeName="cx" dur="${dur}s" begin="-${i*.9}s" repeatCount="indefinite" values="${x};${x+30};${x}"/></circle>`}).join('');
+render();
+</script>
+</body>
+</html>
