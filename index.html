@@ -114,13 +114,15 @@ use(S.active);save();
 let tab='today',sel=TODAY;
 
 // ---------- plan model (language-independent) ----------
-const TEMPLATE=['A','Z','C','B','M','I','R']; // Mon..Sun
+// Weekly rhythm, Mon..Sun. The preset profile trains around fixed CrossFit classes (Tue, Sat) and runs three times a week.
+const TEMPLATES={std:['A','Z','C','B','M','I','R'],crossfit:['M','X','E','T','C','X','L']},tpl=()=>TEMPLATES[P.preset?'crossfit':'std'];
 const nWeeks=()=>Math.max(1,Math.ceil(diff(P.trip,P.start)/7));
 const weekOf=d=>Math.floor(diff(d,P.start)/7);
 function phase(w){const n=nWeeks();if(w>=n-1)return 3;if(w>=n-4)return 2;return w<Math.ceil((n-4)/2)?0:1}
-const typeOf=d=>(d<P.start||d>=P.trip)?null:TEMPLATE[dow(d)];
+const typeOf=d=>(d<P.start||d>=P.trip)?null:tpl()[dow(d)];
 // trainer auto-adjust: each "too easy / too hard" shifts that session type by ~10%
-function lvl(t){let l=0;for(const d of Object.keys(P.fb).sort())if(typeOf(d)===t)l=Math.max(-1,Math.min(2,l+P.fb[d]));return l}
+function lvl(t){if(t==='X')return 0;let l=0;   // a class is a fixed hour
+ for(const d of Object.keys(P.fb).sort())if(typeOf(d)===t)l=Math.max(-1,Math.min(2,l+P.fb[d]));return l}
 // [sets, amount, unit] per exercise; arrays are per phase [Foundation, Build, Peak, Taper]. Texts live in C[lang].ses, same order.
 const W=[1,null,''],s3=[3,3,3,2];
 const DOSE={
@@ -130,6 +132,10 @@ C:[W,[s3,[30,30,40,30],'s/side'],[s3,[6,8,10,6],'reps/side'],[s3,[40,60,75,40],'
 Z:[[1,[30,40,45,25],'min']],
 I:[[1,[5,8,8,5],'min'],[[1,6,8,1],[40,2,1,20],'min'],[[0,0,4,0],[0,0,45,0],'s'],[1,5,'min']],
 M:[[2,45,'s/side'],[2,45,'s/side'],[2,8,'reps/side'],[3,30,'s'],[2,8,'reps/side'],[1,20,'min']],
+X:[[1,60,'min'],[2,30,'s/side']],
+E:[[1,[30,35,40,25],'min'],[[4,4,6,3],20,'s']],
+T:[[1,10,'min'],[[6,5,6,4],[1,3,2,1],'min'],[[0,0,4,0],[0,0,45,0],'s'],[1,[5,8,8,5],'min']],
+L:[[1,[40,50,60,30],'min']],
 R:[]};
 const BOARDS=[{name:'Nitro Cinema Wide 162',len:162,w:59,f:15,b:-9},{name:'Nitro Magnum Ti Wide 171',len:171,w:61,f:18,b:-6,sb:1},{name:'Salomon Sight 166 Wide',len:166,w:60,f:15,b:-9}];
 const SKILL_IDS=['posture','edges','steer','shape','flex','early','short','carve','flats','bumps','steep'];
@@ -154,7 +160,7 @@ en:{loc:'en-GB',other:'Nederlands',
  none:(d,a,b)=>`No training planned for ${d} — the plan runs from ${a} until the trip on ${b}.`,
  adjust:'trainer adjust',complete:'✓ Session complete.',how:'How was it?',fbs:['Too easy','Just right','Too hard'],undo:'Undo',finish:'Finish session',
  block:'Your block',tripStart:'Trip start:',rescale:'The phases rescale automatically.',
- planNote:'Six sessions a week, 20–50 minutes each. Missing one is fine — never try to "catch up" two hard sessions in one day. If you have joint or heart issues, clear the plan with your doctor first.',
+ planNote:'Sessions take 20–60 minutes. Missing one is fine — never try to "catch up" two hard sessions in one day. If you have joint or heart issues, clear the plan with your doctor first.',
  rhythm:'Weekly rhythm',phasesH:'Phases',rulesH:'Training rules',
  rules:['Progress when the last rep still looks like the first. Tell the coach "too easy" and it adds load for you.','Muscle soreness is fine; sharp joint pain is a stop sign.','{h}Losing even 3–4 kg before the trip makes every turn, every fall and every get-up easier — the cardio days and ≈150 g protein a day take care of most of it.{/h}','Book 2–3 evenings at an indoor snow hall in January. Nothing off-snow replaces snow time; take the Technique drills with you.'],
  allWeeks:'All weeks',weekTh:['#','Dates','Phase','Done'],
@@ -199,6 +205,19 @@ en:{loc:'en-GB',other:'Nederlands',
   ['Deep squat hold','Hold onto a door frame; pry knees out.'],
   ['Thoracic rotation (open book)','Follow the hand with your eyes.'],
   ['Easy walk','Optional but worth it.']]},
+ X:{short:'CrossFit',title:'CrossFit class',why:'Your fixed class. It covers general strength and conditioning, so the rest of the week can stay snowboard-specific.',ex:[
+  [['CrossFit class','CrossFit class','CrossFit class','CrossFit class — scaled down'],['Go as normal. When you can choose, pick squats, lunges and core work over upper-body volume.','Go as normal. Do not chase a leg PR in the 48 hours before your long run.','Keep quality high but stop short of failure on legs: you have three runs this week as well.','Last week before the trip: about 70% of your usual loads, no max lifts, nothing new. Arrive fresh, not sore.']],
+  ['Afterwards: single-leg balance','Two minutes that CrossFit does not give you. Soft knee, quiet hips, tired legs — just like the last run of the day.']]},
+ E:{short:'Run',title:'Easy run',why:'Easy running builds the engine that gets you through six full days on the mountain.',ex:[
+  ['Easy run','Conversational pace: you can speak full sentences.{h} At {kg} kg, soft ground and good shoes matter; if a joint complains, walk for a minute or switch to the bike for this one.{/h}'],
+  ['Relaxed strides','After the run: accelerate smoothly to fast-but-relaxed, then walk back. Wakes the legs up without tiring them.']]},
+ T:{short:'Intervals',title:'Interval run',why:'A snowboard run is 2–5 minutes of hard leg work, then a lift. Train that pattern on foot.',ex:[
+  ['Warm-up jog','Very easy, then a few leg swings.'],
+  [['Brisk 1-minute efforts, 2 min walk or jog between','3-minute efforts at hard pace, 2 min easy jog between','2-minute uphill efforts, jog back down','Brisk 1-minute efforts, 2 min easy between'],['Brisk = clearly faster than your easy pace, still controlled.','Hard = you can only say a few words. Keep every repeat the same pace.','Find a steady hill. Uphill running loads the legs like riding does, with less pounding.','Just enough to stay sharp. Finish feeling you could do more.']],
+  [['—','—','Leg-burn finisher: squat hold in riding stance','—'],'30 s rest between. Stay low, keep breathing — this is the last run of the day.'],
+  ['Cool-down jog and stretch','Easy jog, then calves, quads and hips.']]},
+ L:{short:'Long run',title:'Long easy run',why:'Time on your feet. This is the session that makes day 5 of the trip feel like day 2.',ex:[
+  ['Long run at easy pace','Slower than you think. Walk breaks are fine, and trails or hills are a bonus.{h} Add distance gradually: never more than 10 minutes longer than last week.{/h}']]},
  R:{short:'Rest',title:'Rest day',why:'Adaptation happens today. Sleep, eat protein (aim ≈ 150 g/day), drink water. A relaxed walk is fine.',ex:[]}},
  svg:{back:'{Bs} (back)',front:'{Fs} (front)',nose:'NOSE →',tail:'tail · toe edge {tb} (white dot = toes)'},
  boards:[
@@ -278,7 +297,7 @@ nl:{loc:'nl-NL',other:'English',
  none:(d,a,b)=>`Geen training gepland op ${d} — het schema loopt van ${a} tot de reis op ${b}.`,
  adjust:'aanpassing trainer',complete:'✓ Sessie afgerond.',how:'Hoe ging het?',fbs:['Te makkelijk','Precies goed','Te zwaar'],undo:'Ongedaan maken',finish:'Sessie afronden',
  block:'Jouw blok',tripStart:'Start reis:',rescale:'De fases schalen automatisch mee.',
- planNote:'Zes sessies per week van 20–50 minuten. Eentje missen is niet erg — probeer nooit twee zware sessies op één dag "in te halen". Heb je gewrichts- of hartklachten, overleg het schema dan eerst met je huisarts.',
+ planNote:'Sessies duren 20–60 minuten. Eentje missen is niet erg — probeer nooit twee zware sessies op één dag "in te halen". Heb je gewrichts- of hartklachten, overleg het schema dan eerst met je huisarts.',
  rhythm:'Weekritme',phasesH:'Fases',rulesH:'Trainingsregels',
  rules:['Ga zwaarder zodra je laatste herhaling er nog net zo uitziet als je eerste. Zeg tegen de coach "te makkelijk" en die verhoogt de belasting voor je.','Spierpijn is prima; scherpe pijn in een gewricht is een stopteken.','{h}Zelfs 3–4 kg afvallen vóór de reis maakt elke bocht, elke val en elke keer opstaan makkelijker — de cardiodagen en ≈150 g eiwit per dag regelen het meeste.{/h}','Boek in januari 2–3 avonden in een indoor-skihal. Niets buiten de sneeuw vervangt sneeuwtijd; neem de techniekoefeningen mee.'],
  allWeeks:'Alle weken',weekTh:['#','Data','Fase','Gedaan'],
@@ -323,6 +342,19 @@ nl:{loc:'nl-NL',other:'English',
   ['Diepe squat vasthouden','Hou een deurpost vast; duw je knieën naar buiten.'],
   ['Bovenrugrotatie (open boek)','Volg je hand met je ogen.'],
   ['Rustige wandeling','Optioneel, maar de moeite waard.']]},
+ X:{short:'CrossFit',title:'CrossFit-les',why:'Je vaste les. Die dekt algemene kracht en conditie, zodat de rest van de week snowboardspecifiek kan blijven.',ex:[
+  [['CrossFit-les','CrossFit-les','CrossFit-les','CrossFit-les — rustiger'],['Doe gewoon mee. Kies waar het kan voor squats, lunges en core boven veel bovenlichaam.','Doe gewoon mee. Jaag in de 48 uur voor je duurloop geen beenrecord na.','Hou de kwaliteit hoog maar stop bij je benen vóór falen: je loopt deze week ook nog drie keer.','Laatste week voor de reis: ongeveer 70% van je normale gewichten, geen maximale lifts, niets nieuws. Kom fris aan, niet met spierpijn.']],
+  ['Daarna: balanceren op één been','Twee minuten die CrossFit je niet geeft. Knie licht gebogen, heupen rustig, vermoeide benen — net als de laatste afdaling van de dag.']]},
+ E:{short:'Lopen',title:'Rustige duurloop',why:'Rustig hardlopen bouwt de motor waarmee je zes volle dagen op de berg doorkomt.',ex:[
+  ['Rustig hardlopen','Praattempo: je kunt nog hele zinnen zeggen.{h} Met {kg} kg tellen een zachte ondergrond en goede schoenen; protesteert een gewricht, wandel dan een minuut of pak voor deze keer de fiets.{/h}'],
+  ['Ontspannen versnellingen','Na het lopen: versnel soepel tot snel-maar-ontspannen en wandel terug. Maakt je benen wakker zonder ze te vermoeien.']]},
+ T:{short:'Intervallen',title:'Intervalloop',why:'Een afdaling is 2–5 minuten hard werken met je benen, daarna een lift. Train dat patroon te voet.',ex:[
+  ['Inlopen','Heel rustig, daarna een paar beenzwaaien.'],
+  [['Vlotte blokken van 1 minuut, 2 min wandelen of dribbelen ertussen','Blokken van 3 minuten op hard tempo, 2 min rustig dribbelen ertussen','Blokken van 2 minuten heuvelop, terug naar beneden dribbelen','Vlotte blokken van 1 minuut, 2 min rustig ertussen'],['Vlot = duidelijk sneller dan je rustige tempo, nog steeds beheerst.','Hard = je krijgt er nog maar een paar woorden uit. Loop elke herhaling even snel.','Zoek een gelijkmatige helling. Heuvelop lopen belast je benen zoals snowboarden, met minder klappen.','Net genoeg om scherp te blijven. Stop met het gevoel dat je meer kunt.']],
+  [['—','—','Benen-in-brand-finisher: squat vasthouden in rijhouding','—'],'30 s rust ertussen. Blijf laag, blijf ademen — dit is de laatste afdaling van de dag.'],
+  ['Uitlopen en stretchen','Rustig dribbelen, daarna kuiten, bovenbenen en heupen.']]},
+ L:{short:'Duurloop',title:'Lange rustige duurloop',why:'Tijd op je benen. Dit is de sessie waardoor dag 5 van de reis voelt als dag 2.',ex:[
+  ['Lange duurloop op rustig tempo','Langzamer dan je denkt. Wandelpauzes mogen, en paden of heuvels zijn mooi meegenomen.{h} Bouw rustig op: nooit meer dan 10 minuten langer dan vorige week.{/h}']]},
  R:{short:'Rust',title:'Rustdag',why:'Vandaag word je sterker. Slapen, eiwitten eten (richt op ≈ 150 g per dag), water drinken. Een ontspannen wandeling mag.',ex:[]}},
  svg:{back:'{Bs} (achter)',front:'{Fs} (voor)',nose:'NOSE →',tail:'tail · teenkant {tb} (witte stip = tenen)'},
  boards:[
@@ -390,7 +422,7 @@ const pick=(v,p)=>Array.isArray(v)?v[p]:v;
 function dose(e,p,l){const u=pick(e.u,p);let n=pick(e.n,p);if(n==null)return'';
  n*=1+.1*l;n=u[0]==='s'?Math.round(n/5)*5:Math.max(1,Math.round(n));
  return(e.sets>1?e.sets+' × ':'')+n+' '+T.u[u]}
-const exercises=(t,p)=>DOSE[t].map((d,i)=>({sets:pick(d[0],p),n:d[1],u:d[2],name:pick(T.ses[t].ex[i][0],p),cue:T.ses[t].ex[i][1]})).filter(e=>e.sets>0);
+const exercises=(t,p)=>DOSE[t].map((d,i)=>({sets:pick(d[0],p),n:d[1],u:d[2],name:pick(T.ses[t].ex[i][0],p),cue:pick(T.ses[t].ex[i][1],p)})).filter(e=>e.sets>0);
 function adherence(){let due=0,done=0;const end=TODAY<P.trip?TODAY:add(P.trip,-1);
  for(let d=P.start;d<=end;d=add(d,1)){if(typeOf(d)==='R')continue;if(P.done[d]){due++;done++}else if(d<TODAY)due++}
  return due?Math.round(100*done/due):100}
@@ -485,7 +517,7 @@ function coach(){const left=diff(P.trip,TODAY),out=[];
  const w=weekOf(TODAY),p=phase(w),t=typeOf(TODAY);
  out.push(T.count(left,w+1,nWeeks(),T.phases[p],T.phaseWhy[p]));
  if(P.done[TODAY])out.push(T.todayDone);
- else if(t==='R'||t==='M'){for(let d=monday(TODAY);d<TODAY;d=add(d,1)){const m=typeOf(d);if(m&&'ABCZI'.includes(m)&&!P.done[d]){out.push(`${T.skipped(T.ses[m].title,T.days[dow(d)])} <button data-open="${d}">${T.open}</button>`);break}}}
+ else if(t==='R'||t==='M'){for(let d=monday(TODAY);d<TODAY;d=add(d,1)){const m=typeOf(d);if(m&&'ABCZIETL'.includes(m)&&!P.done[d]){out.push(`${T.skipped(T.ses[m].title,T.days[dow(d)])} <button data-open="${d}">${T.open}</button>`);break}}}
  const last=Object.keys(P.fb).sort().pop();
  if(last&&P.fb[last]&&typeOf(last))out.push(T.rated(T.ses[typeOf(last)].title,P.fb[last]>0));
  return out.join('<br>')}
@@ -510,9 +542,9 @@ function vToday(){const m=monday(sel);let strip='';
 
 function vPlan(){let rows='';const n=nWeeks(),cur=weekOf(TODAY);
  for(let w=0;w<n;w++){const m=add(P.start,w*7);let done=0;for(let i=0;i<7;i++)if(P.done[add(m,i)])done++;
-  rows+=`<tr data-open="${m}" class="${w===cur?'now':''}"><td>${w+1}</td><td>${fmt(m)} – ${fmt(add(m,6))}</td><td class="p${phase(w)}"><b>${T.phases[phase(w)]}</b></td><td>${done}/6</td></tr>`}
+  rows+=`<tr data-open="${m}" class="${w===cur?'now':''}"><td>${w+1}</td><td>${fmt(m)} – ${fmt(add(m,6))}</td><td class="p${phase(w)}"><b>${T.phases[phase(w)]}</b></td><td>${done}/${tpl().filter(t=>t!=='R').length}</td></tr>`}
  return`<div class="card"><h2>${T.block}</h2><p>${T.tripStart} <input type="date" id="trip" value="${P.trip}" min="${add(P.start,7)}"> <small>${T.rescale}</small></p><p class="mute">${T.planNote}</p></div>
- <div class="card"><h2>${T.rhythm}</h2><table><tbody>${TEMPLATE.map((t,i)=>`<tr><td><b>${T.days[i]}</b></td><td>${T.ses[t].title}</td></tr>`).join('')}</tbody></table>
+ <div class="card"><h2>${T.rhythm}</h2><table><tbody>${tpl().map((t,i)=>`<tr><td><b>${T.days[i]}</b></td><td>${T.ses[t].title}</td></tr>`).join('')}</tbody></table>
  <h3>${T.phasesH}</h3><ul>${T.phases.map((p,i)=>`<li><b class="p${i}">${p}</b> — ${T.phaseWhy[i]}</li>`).join('')}</ul>
  <h3>${T.rulesH}</h3><ul>${T.rules.map(r=>`<li>${r}</li>`).join('')}</ul></div>
  <div class="card"><h2>${T.allWeeks}</h2><table><thead><tr>${T.weekTh.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>`}
