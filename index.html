@@ -251,6 +251,15 @@ en:{loc:'en-GB',other:'Nederlands',
  testH:'The red-ready test',testIntro:'Tick all of these on a blue and a groomed red is well within reach.',
  tests:['Link turns top to bottom on any blue without stopping','Quick controlled stop on both toe and heel edge','Side-slip the steepest blue pitch on both edges, in a straight line','10 short turns inside a one-groomer-wide corridor','Change turn size on command: big, medium, small','Ride a blue cat track without catching an edge','Still riding with good posture on the last run of the day'],
  dayN:'Day',
+ pack:{h:'Packing list',count:(a,b)=>`${a} of ${b} packed`,groups:[
+  {k:'own',only:'preset',t:'Your boards and boots',i:['Nitro Cinema 162 with Burton Mission bindings (L)','Nitro Magnum Ti 171W','Salomon Sight 166W — spare, optional','Vans OG Boa boots','Nike Vapen boots — spare; check liners and soles first','Board bag']},
+  {k:'gear',only:'other',t:'Board and boots',i:['Snowboard with bindings','Snowboard boots','Board bag']},
+  {k:'prot',t:'Protection',i:['Helmet','Goggles, plus a low-light lens','Wrist guards','Impact shorts','Knee pads — optional']},
+  {k:'wear',t:'Clothing',i:['Snowboard jacket','Snowboard pants','2–3 thermal base layers','Mid layer or fleece','4 pairs of snowboard socks, no cotton','Gloves or mittens, plus thin liners','Neck warmer','Beanie']},
+  {k:'tools',t:'Tools and spares',i:['Multi-tool with a #3 Phillips bit','Spare binding screws and a spare strap','Fresh hot wax before you leave, or wax and a scraper','Board lock','Stomp pad for one-foot riding']},
+  {k:'body',t:'Body care',i:['Sunscreen SPF 50 and lip balm','Water bottle or hydration pack','Pocket snacks','Blister plasters and sports tape','Painkillers and muscle gel','Massage ball or foam roller']},
+  {k:'docs',t:'Documents and money',i:['Passport or ID card','Lift pass or booking confirmation','Travel and winter-sports insurance, European health card','Booking confirmation for the residence','Bank card and some cash','Phone charger and power bank']},
+  {k:'car',t:'If you drive',i:['Winter tyres or snow chains — required in the French Alps from 1 November to 31 March','Hi-vis vests and warning triangle','Ice scraper and de-icer']}]},
  map:{h:'Piste map around your base',base:'Les Balcons des Aiguilles — your base',
   intro:'You are staying at <b>Les Balcons des Aiguilles in La Toussuire</b>, the red marker. Tap any piste or lift for its name, length, altitude and gradient. Zoom in to see all names; the thick lines are the pistes recommended below.',
   near:['The closest run to the residence is the blue <b>Soleil</b>, served by the Soleil chairlift.','The <b>Lutins</b> beginner area with its magic carpets is close by: a good place for the day 1 drills.'],
@@ -388,6 +397,15 @@ nl:{loc:'nl-NL',other:'English',
  testH:'De red-ready-test',testIntro:'Vink je deze allemaal af op een blauwe piste, dan ligt een geprepareerde rode binnen bereik.',
  tests:['Bochten aan elkaar rijden van boven tot onder op elke blauwe piste, zonder te stoppen','Snel en gecontroleerd stoppen op zowel teen- als hielkant','Het steilste stuk van een blauwe piste side-slippen op beide kanten, in een rechte lijn','10 korte bochten binnen een corridor van één pistenbullyspoor','Bochtgrootte wisselen op commando: groot, middel, klein','Een blauw ziehweg rijden zonder een kant te haken','Op de laatste afdaling van de dag nog steeds rijden met een goede houding'],
  dayN:'Dag',
+ pack:{h:'Paklijst',count:(a,b)=>`${a} van ${b} ingepakt`,groups:[
+  {k:'own',only:'preset',t:'Je boards en schoenen',i:['Nitro Cinema 162 met Burton Mission-bindingen (L)','Nitro Magnum Ti 171W','Salomon Sight 166W — reserve, optioneel','Vans OG Boa-schoenen','Nike Vapen-schoenen — reserve; controleer eerst binnenschoenen en zolen','Boardbag']},
+  {k:'gear',only:'other',t:'Board en schoenen',i:['Snowboard met bindingen','Snowboardschoenen','Boardbag']},
+  {k:'prot',t:'Bescherming',i:['Helm','Skibril, plus een lens voor slecht zicht','Polsbeschermers','Valbroek','Kniebeschermers — optioneel']},
+  {k:'wear',t:'Kleding',i:['Snowboardjas','Snowboardbroek','2–3 thermolagen','Tussenlaag of fleece','4 paar snowboardsokken, geen katoen','Handschoenen of wanten, plus dunne onderhandschoenen','Nekwarmer','Muts']},
+  {k:'tools',t:'Gereedschap en reserve',i:['Multitool met een Phillips #3-bit','Reserveschroeven voor de bindingen en een reservestrap','Vers laten waxen voor vertrek, of wax en een schraper','Boardslot','Stomp pad voor rijden met één voet']},
+  {k:'body',t:'Verzorging',i:['Zonnebrand SPF 50 en lippenbalsem','Waterfles of drinkrugzak','Snacks voor in je zak','Blarenpleisters en sporttape','Pijnstillers en spiergel','Massagebal of foamroller']},
+  {k:'docs',t:'Documenten en geld',i:['Paspoort of ID-kaart','Skipas of boekingsbevestiging','Reis- en wintersportverzekering, Europese zorgpas','Boekingsbevestiging van de residentie','Bankpas en wat contant geld','Telefoonoplader en powerbank']},
+  {k:'car',t:'Als je met de auto gaat',i:['Winterbanden of sneeuwkettingen — verplicht in de Franse Alpen van 1 november tot 31 maart','Veiligheidshesjes en gevarendriehoek','IJskrabber en ruitenontdooier']}]},
  map:{h:'Pistekaart rond jullie verblijf',base:'Les Balcons des Aiguilles — jullie verblijf',
   intro:'Jullie verblijven in <b>Les Balcons des Aiguilles in La Toussuire</b>, de rode markering. Tik op een piste of lift voor de naam, lengte, hoogte en helling. Zoom in om alle namen te zien; de dikke lijnen zijn de pistes die hieronder worden aangeraden.',
   near:['De dichtstbijzijnde piste bij de residentie is de blauwe <b>Soleil</b>, met de stoeltjeslift Soleil.','Het beginnersgebied <b>Lutins</b> met loopbanden ligt vlakbij: een goede plek voor de oefeningen van dag 1.'],
@@ -597,8 +615,14 @@ function showMap(){if(!el('map'))return;
 document.addEventListener('click',e=>{const b=e.target.closest('[data-piste]'),ln=b&&pisteLayers[b.dataset.piste];if(!ln||!mapObj)return;
  el('map').scrollIntoView({behavior:'smooth',block:'center'});mapObj.fitBounds(ln.getBounds(),{maxZoom:15,padding:[30,30]});ln.openPopup()});
 
+// Packing list, ticked off per profile. A group marked 'preset' or 'other' only shows for that kind of profile.
+const packGroups=()=>T.pack.groups.filter(g=>!g.only||(g.only==='preset')===!!P.preset);
+function packCount(){const p=P.pack||{},g=packGroups();return T.pack.count(g.reduce((n,x)=>n+x.i.filter((_,i)=>p[x.k+i]).length,0),g.reduce((n,x)=>n+x.i.length,0))}
+function packCard(){const p=P.pack||{};
+ return`<div class="card"><h2>${T.pack.h}</h2><p class="mute" id="packn">${packCount()}</p><div class="notes">${packGroups().map(g=>`<div><h3>${g.t}</h3>${g.i.map((x,i)=>`<label class="ex"><input type="checkbox" data-pack="${g.k+i}" ${p[g.k+i]?'checked':''}><span>${x}</span></label>`).join('')}</div>`).join('')}</div></div>`}
+
 function vTrip(){return`<div class="card">${T.tripIntro(fmt(P.trip))}</div>`+(P.preset?mapCard():'')+
- T.trip.map((t,i)=>`<div class="card"><span class="tag">${T.dayN} ${i+1} · ${fmt(add(P.trip,i))}</span> <span class="tag">${P.preset?t[1]:T.yourBoard}</span><h2 style="margin-top:8px">${t[0]}</h2><p>${t[2]}</p></div>`).join('')+`<div class="card">${T.mornings}</div>`}
+ T.trip.map((t,i)=>`<div class="card"><span class="tag">${T.dayN} ${i+1} · ${fmt(add(P.trip,i))}</span> <span class="tag">${P.preset?t[1]:T.yourBoard}</span><h2 style="margin-top:8px">${t[0]}</h2><p>${t[2]}</p></div>`).join('')+`<div class="card">${T.mornings}</div>`+packCard()}
 
 function vProfile(){const ids=Object.keys(S.profiles),f=T.pf,
  stance=(attr,v)=>`<select ${attr}>${['goofy','regular'].map(s=>`<option value="${s}" ${s===v?'selected':''}>${f[s]}</option>`).join('')}</select>`,
@@ -631,6 +655,7 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-tab],[data
  save();render()});
 document.addEventListener('change',e=>{const a=e.target.dataset;
  if(a.chk){const[d,i]=a.chk.split('|'),set=new Set(P.chk[d]||[]);e.target.checked?set.add(+i):set.delete(+i);P.chk[d]=[...set];save()}
+ else if(a.pack){(P.pack||={})[a.pack]=e.target.checked?1:0;save();el('packn').textContent=packCount()}   // no re-render: it would rebuild the map
  else if(a.test){P.skill[a.test]=e.target.checked?1:0;save();render()}
  else if(e.target.id==='trip'&&e.target.value>P.start){P.trip=e.target.value;save();render()}
  else if(a.pf){const k=a.pf,v=e.target.value.trim(),num=k==='cm'||k==='kg';   // invalid edits are dropped and the form re-renders with the old value
